@@ -1,6 +1,6 @@
 import express from 'express';
 import {createEmployee, getEmployee, getEmployeeId, deleteEmployeeById, signin, updateEmployeeById, employeeForgotPassword, resetEmployeePassword,
-uploadUserPhoto, resizeUserPhoto} from '../controller/employeeController.js'
+uploadUserPhoto, resizeUserPhoto} from '../Controller/employeeController.js'
 import { isAuthEmployee } from "../utils.js";
 
 const employeeRouter = express.Router();

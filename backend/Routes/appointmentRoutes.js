@@ -5,7 +5,7 @@ import {
   getAppointmentId,
   updatePaidAppointment,
   getEmployeeAppointment,
-} from "../controller/appointmentController.js";
+} from "../Controller/appointmentController.js";
 import { isAuth, isAuthEmployee } from "../utils.js";
 
 const appointmentRouter = express.Router();
