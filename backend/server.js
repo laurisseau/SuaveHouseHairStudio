@@ -24,7 +24,7 @@ dotenv.config({ path: "config.env" });
 //console.log(process.env.MONGODB_URI)
 
 mongoose
-  .connect(process.env.PORT)
+  .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("connected to db");
   })
