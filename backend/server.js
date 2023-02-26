@@ -19,9 +19,9 @@ app.use((req, res, next) => {
   next();
 });
 
-dotenv.config({ path: "config.env" });
+dotenv.config();
 
-//console.log(process.env.MONGODB_URI)
+console.log(process.env.MONGODB_URI)
 
 mongoose
   .connect(process.env.MONGODB_URI)
