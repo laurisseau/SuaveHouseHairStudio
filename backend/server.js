@@ -11,6 +11,8 @@ import {errorController} from "./Controller/errorController.js"
 
 const app = express();
 
+
+
 app.use(cors());
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -19,8 +21,10 @@ app.use((req, res, next) => {
 
 dotenv.config({ path: "config.env" });
 
+//console.log(process.env.MONGODB_URI)
+
 mongoose
-  .connect(process.env.MONGODB_URI)
+  .connect(process.env.PORT)
   .then(() => {
     console.log("connected to db");
   })
