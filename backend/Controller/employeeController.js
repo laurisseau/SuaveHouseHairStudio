@@ -33,6 +33,27 @@ let dayTime = [
   "7:30pm",
 ];
 
+let satTime = [
+  "9:00am",
+  "9:30am",
+  "10:30am",
+  "11:00am",
+  "11:30am",
+  "12:00pm",
+  "12:30pm",
+  "1:00pm",
+  "1:30pm",
+  "2:00pm",
+  "2:30pm",
+  "3:00pm",
+  "3:30pm",
+  "4:00pm",
+  "4:30pm",
+  "5:00pm"
+];
+
+
+
 const daysInMonth = {
   0: 31,
   1: 28,
@@ -79,11 +100,24 @@ let length = currDate + limit;
 //-----------------------------------------------
 let counter = Math.trunc(limit / 7);
 
+
 //need if statement for new employees
 
 for (counter; counter > 0; counter--) {
   for (let i = 0; i < dayNames.length; i++) {
+    //loops through obj and add daytime to every day
     scheduleObj[dayNames[currDay + i]] = dayTime;
+
+    // sun day is an off day
+  if(scheduleObj.Sun){
+    scheduleObj[dayNames[0]] = []
+  }
+
+  // sat day cut hours
+  if(scheduleObj.Sat){
+    scheduleObj[dayNames[6]] = satTime
+  }
+    
     if (scheduleObj[undefined]) {
       let arr = [0, 6, 5, 4, 3, 2, 1];
       delete scheduleObj[undefined];
@@ -117,7 +151,7 @@ if (rem > 0) {
     scheduleObj = {};
   }
 }
-
+//console.log(employeeSchedule)
 //-------------------------------UPLOADING IMAGES---------------------------------------*/
 
 const multerStorage = multer.memoryStorage();
@@ -224,9 +258,24 @@ const updatedEmployeeScheduleDaily = () => {
 
       updatedSchedule.push(emptyObj);
 
+      if(emptyObjDayName === 'Sun'){
+        emptyObj[emptyObjDayName] = [];
+        emptyObj["day"] = addedDay;
+        emptyObj["month"] = month;
+      }else if(emptyObjDayName === 'Sat'){
+        emptyObj[emptyObjDayName] = satTime;
+        emptyObj["day"] = addedDay;
+        emptyObj["month"] = month;
+      } else {
+
       emptyObj[emptyObjDayName] = dayTime;
       emptyObj["day"] = addedDay;
       emptyObj["month"] = month;
+
+      }
+    
+      //console.log(updatedSchedule)
+
 
       await Employee.findByIdAndUpdate(docs[i]._id, {
         schedule: updatedSchedule,
@@ -237,9 +286,10 @@ const updatedEmployeeScheduleDaily = () => {
   });
 };
 
-//schedule.scheduleJob('*/20 * * * * *', () => {
-//updatedEmployeeScheduleDaily()
-//});
+// update schedule by the day
+schedule.scheduleJob('0 1 * * *', () => {
+  updatedEmployeeScheduleDaily()
+});
 
 export const getEmployee = expressAsyncHandler(async (req, res) => {
   const findEmployee = await Employee.find();

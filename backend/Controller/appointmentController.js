@@ -82,6 +82,7 @@ const monthNames = [
 
 let currDay = date.getDate();
 let currMonth = monthNames[date.getMonth()];
+
 const checkIfAppointmentsArePastDate = () => {
   Appointments.find(async (err, docs) => {
     const docsLength = docs.length;
@@ -89,8 +90,6 @@ const checkIfAppointmentsArePastDate = () => {
     for (let i = 0; i < docsLength; i++) {
       if (docs[i].active === true) {
         if (currDay === +docs[i].day + 1 && currMonth === docs[i].month) {
-          console.log("active now equals false");
-
           await Appointments.findByIdAndUpdate(docs[i]._id, { active: false });
         }
       }
@@ -98,6 +97,6 @@ const checkIfAppointmentsArePastDate = () => {
   });
 };
 
-//schedule.scheduleJob('*/30 * * * * *', () => {
-//checkIfAppointmentsArePastDate()
-//});
+schedule.scheduleJob('0 1 * * *', () => {
+  checkIfAppointmentsArePastDate()
+});
