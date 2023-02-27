@@ -3,6 +3,7 @@ import Employee from "../Models/employeeModel.js";
 import expressAsyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import path from "path"
 import { generateEmployeeToken } from "../utils.js";
 import { sendEmail } from "../sendEmail.js";
 import multer from "multer";
@@ -153,6 +154,7 @@ if (rem > 0) {
 }
 //console.log(employeeSchedule)
 //-------------------------------UPLOADING IMAGES---------------------------------------*/
+const __dirname = path.resolve()
 
 const multerStorage = multer.memoryStorage();
 
@@ -173,19 +175,27 @@ export const uploadUserPhoto = upload.single("image");
 
 export const resizeUserPhoto = expressAsyncHandler(async (req, res, next) => {
   if (!req.file) return next();
-
+  
   const name = req.file.originalname.split(".");
-
+  
   req.file.filename = `employee-${name[0]}-${Date.now()}.jpeg`;
 
   await sharp(req.file.buffer)
     .resize(350, 475)
     .toFormat("jpeg")
     .jpeg({ quality: 90 })
-    .toFile(`../frontend/src/img/${req.file.filename}`);
+    //.toFile(`../frontend/src/img/${req.file.filename}`);
+    .toFile(path.join(__dirname, `../frontend/src/img/${req.file.filename}`))
 
+    
   next();
 });
+
+
+
+//console.log(__dirname, 'path')
+
+
 
 export const createEmployee = expressAsyncHandler(async (req, res) => {
   const newEmployee = new Employee({
