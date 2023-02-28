@@ -10,6 +10,8 @@ import { Store } from "../Store";
 import { useNavigate } from "react-router-dom";
 import LoadingBoxComp from "../components/LoadingBoxComp";
 import Table from "react-bootstrap/Table";
+import { toast } from "react-toastify";
+import { getError } from "../utils";
 
 export default function ModalComp(props) {
   const [loading, setLoading] = useState(false);
@@ -43,7 +45,7 @@ export default function ModalComp(props) {
       {
         cutType: "Shape Up(No Facial)",
         price: 1000,
-      }
+      },
     ],
   };
 
@@ -71,45 +73,42 @@ export default function ModalComp(props) {
   const numObj = scheduleObj[num];
 
   const timeArr = numObj[dayName];
-  
 
   useEffect(() => {
     setTime("");
   }, [num]);
 
-  
   const createAppointmentFunc = async (clientSecret, paymentMethod) => {
-    
-    const { data } = await axios.post("/api/appointment/createAppointment", {
-      employee,
-      user,
-      time,
-      day,
-      dayName,
-      month,
-      paymentMethod,
-      cutName,
-      cutPrice,
-      clientSecret,
-    });
+    try {
+      const { data } = await axios.post("/api/appointment/createAppointment", {
+        employee,
+        user,
+        time,
+        day,
+        dayName,
+        month,
+        paymentMethod,
+        cutName,
+        cutPrice,
+        clientSecret,
+      });
 
+      if (paymentMethod === "Pay now") {
+        navigate(`/paymentScreen/${data._id}`);
+      } else {
+        navigate(`/appointments`);
+      }
 
-    if (paymentMethod === "Pay now") {
-      navigate(`/paymentScreen/${data._id}`);
-    } else {
-      navigate(`/appointments`);
+      setScheduleObj(data);
+    } catch (err) {
+      toast.error(getError(err));
+      setLoading(false);
     }
-
-    
-    setScheduleObj(data);
-
   };
-
-
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    
+
     setLoading(true);
 
     try {
@@ -124,7 +123,6 @@ export default function ModalComp(props) {
         const clientSecret = clientData.data.clientSecret;
 
         createAppointmentFunc(clientSecret, paymentMethod);
-
       } else {
         createAppointmentFunc("", paymentMethod);
       }
@@ -240,7 +238,6 @@ export default function ModalComp(props) {
                 ? "o active pt-4 ps-4 pe-4 pb-5"
                 : "no active pt-4 ps-4 pe-4 pb-5"
             }
-            
           >
             <Table className="table mb-0 " responsive>
               <thead>
@@ -254,7 +251,9 @@ export default function ModalComp(props) {
                 {cutType.hairCuts.map((obj, id) => (
                   <tr key={id}>
                     <td>{`${obj.cutType}`}</td>
-                    <td className="align-middle">{`$${last2(obj.price)}.00`}</td>
+                    <td className="align-middle">{`$${last2(
+                      obj.price
+                    )}.00`}</td>
 
                     <td className="align-middle">
                       <Button

@@ -4,6 +4,23 @@ import expressAsyncHandler from "express-async-handler";
 import schedule from "node-schedule";
 
 export const createAppointment = expressAsyncHandler(async (req, res) => {
+  const createdAppointments = await Appointments.find({
+    time: req.body.time,
+    employee: req.body.employee,
+    month: req.body.month,
+    day: req.body.day,
+  });
+
+  for (const appointments of createdAppointments) {
+    if (appointments) {
+      res
+        .status(404)
+        .json({
+          message: "This appointment is already taken refresh the page.",
+        });
+    }
+  }
+
   const appointment = await (
     await Appointments.create(req.body)
   ).populate("employee");
@@ -99,6 +116,6 @@ const checkIfAppointmentsArePastDate = () => {
   });
 };
 
-schedule.scheduleJob('0 0 * * 1-7', () => {
-  checkIfAppointmentsArePastDate()
+schedule.scheduleJob("0 0 * * 1-7", () => {
+  checkIfAppointmentsArePastDate();
 });

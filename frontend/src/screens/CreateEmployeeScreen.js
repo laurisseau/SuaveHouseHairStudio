@@ -54,7 +54,7 @@ export default function CreateEmployeeScreen() {
       }
     } catch (err) {
       toast.error(getError(err));
-      console.log(err)
+      //console.log(err)
     }
   };
 
