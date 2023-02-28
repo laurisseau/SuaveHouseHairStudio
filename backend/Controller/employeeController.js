@@ -315,7 +315,7 @@ const updatedEmployeeScheduleDaily = () => {
 };
 
 // update schedule by the day
-schedule.scheduleJob("0 1 * * *", () => {
+schedule.scheduleJob("20 1 * * *", () => {
   updatedEmployeeScheduleDaily();
 });
 
