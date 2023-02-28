@@ -29,7 +29,9 @@ export const createAppointment = expressAsyncHandler(async (req, res) => {
     { schedule: schedule }
   );
 
-  res.send(appointment);
+  //console.log(updateEmployee.schedule)
+
+  res.send(schedule);
 });
 
 export const getAppointment = expressAsyncHandler(async (req, res) => {
@@ -97,6 +99,6 @@ const checkIfAppointmentsArePastDate = () => {
   });
 };
 
-schedule.scheduleJob('0 1 * * *', () => {
+schedule.scheduleJob('0 0 * * 1-7', () => {
   checkIfAppointmentsArePastDate()
 });

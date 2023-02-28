@@ -69,13 +69,17 @@ export default function ModalComp(props) {
   const [scheduleObj, setScheduleObj] = useState(sv);
 
   const numObj = scheduleObj[num];
+
   const timeArr = numObj[dayName];
+  
 
   useEffect(() => {
     setTime("");
   }, [num]);
 
+  
   const createAppointmentFunc = async (clientSecret, paymentMethod) => {
+    
     const { data } = await axios.post("/api/appointment/createAppointment", {
       employee,
       user,
@@ -89,17 +93,23 @@ export default function ModalComp(props) {
       clientSecret,
     });
 
-    setScheduleObj(data.employee.schedule);
 
     if (paymentMethod === "Pay now") {
       navigate(`/paymentScreen/${data._id}`);
     } else {
       navigate(`/appointments`);
     }
+
+    
+    setScheduleObj(data);
+
   };
+
+
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    
     setLoading(true);
 
     try {
@@ -114,6 +124,7 @@ export default function ModalComp(props) {
         const clientSecret = clientData.data.clientSecret;
 
         createAppointmentFunc(clientSecret, paymentMethod);
+
       } else {
         createAppointmentFunc("", paymentMethod);
       }

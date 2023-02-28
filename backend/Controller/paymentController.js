@@ -68,8 +68,6 @@ const clientPayment = () => {
     // get sum of all the cuts in the past week and take 5% out
     sum = sum * .05
 
-    // client payment method goes here --> 
-
     //before sending email make the price readable
     var str = Math.round((Math.abs(sum)))/100;
   
