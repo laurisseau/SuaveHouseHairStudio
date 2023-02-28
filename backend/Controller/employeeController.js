@@ -1,13 +1,38 @@
+import dotenv from "dotenv";
 import schedule from "node-schedule";
 import Employee from "../Models/employeeModel.js";
 import expressAsyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
-import path from "path"
+
 import { generateEmployeeToken } from "../utils.js";
 import { sendEmail } from "../sendEmail.js";
+
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+  DeleteObjectCommand,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
 import multer from "multer";
 import sharp from "sharp";
+
+dotenv.config({ path: "../config.env" });
+
+const bucketName = process.env.BUCKET_NAME;
+const bucketRegion = process.env.BUCKET_REGION;
+const accessKey = process.env.ACCESS_KEY;
+const secretAccessKey = process.env.SECRET_ACCESS_KEY;
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: accessKey,
+    secretAccessKey: secretAccessKey,
+  },
+  region: bucketRegion,
+});
 
 let dayTime = [
   "8:00am",
@@ -50,10 +75,8 @@ let satTime = [
   "3:30pm",
   "4:00pm",
   "4:30pm",
-  "5:00pm"
+  "5:00pm",
 ];
-
-
 
 const daysInMonth = {
   0: 31,
@@ -101,7 +124,6 @@ let length = currDate + limit;
 //-----------------------------------------------
 let counter = Math.trunc(limit / 7);
 
-
 //need if statement for new employees
 
 for (counter; counter > 0; counter--) {
@@ -110,15 +132,15 @@ for (counter; counter > 0; counter--) {
     scheduleObj[dayNames[currDay + i]] = dayTime;
 
     // sun day is an off day
-  if(scheduleObj.Sun){
-    scheduleObj[dayNames[0]] = []
-  }
+    if (scheduleObj.Sun) {
+      scheduleObj[dayNames[0]] = [];
+    }
 
-  // sat day cut hours
-  if(scheduleObj.Sat){
-    scheduleObj[dayNames[6]] = satTime
-  }
-    
+    // sat day cut hours
+    if (scheduleObj.Sat) {
+      scheduleObj[dayNames[6]] = satTime;
+    }
+
     if (scheduleObj[undefined]) {
       let arr = [0, 6, 5, 4, 3, 2, 1];
       delete scheduleObj[undefined];
@@ -154,7 +176,6 @@ if (rem > 0) {
 }
 //console.log(employeeSchedule)
 //-------------------------------UPLOADING IMAGES---------------------------------------*/
-const __dirname = path.resolve()
 
 const multerStorage = multer.memoryStorage();
 
@@ -175,27 +196,27 @@ export const uploadUserPhoto = upload.single("image");
 
 export const resizeUserPhoto = expressAsyncHandler(async (req, res, next) => {
   if (!req.file) return next();
-  
-  const name = req.file.originalname.split(".");
-  
-  req.file.filename = `employee-${name[0]}-${Date.now()}.jpeg`;
 
-  await sharp(req.file.buffer)
-    .resize(350, 475)
-    .toFormat("jpeg")
-    .jpeg({ quality: 90 })
-    //.toFile(`../frontend/src/img/${req.file.filename}`);
-    .toFile(path.join(__dirname, `../frontend/src/img/${req.file.filename}`))
+  const randomImageName = (bytes = 32) =>
+    crypto.randomBytes(bytes).toString("hex");
 
-    
+  const buffer = await sharp(req.file.buffer).resize(350, 475).toBuffer();
+
+  req.file.filename = randomImageName();
+
+  const params = {
+    Bucket: bucketName,
+    Key: req.file.filename,
+    Body: buffer,
+    ContentType: req.file.mimetype,
+  };
+
+  const command = new PutObjectCommand(params);
+
+  await s3.send(command);
+
   next();
 });
-
-
-
-//console.log(__dirname, 'path')
-
-
 
 export const createEmployee = expressAsyncHandler(async (req, res) => {
   const newEmployee = new Employee({
@@ -268,24 +289,21 @@ const updatedEmployeeScheduleDaily = () => {
 
       updatedSchedule.push(emptyObj);
 
-      if(emptyObjDayName === 'Sun'){
+      if (emptyObjDayName === "Sun") {
         emptyObj[emptyObjDayName] = [];
         emptyObj["day"] = addedDay;
         emptyObj["month"] = month;
-      }else if(emptyObjDayName === 'Sat'){
+      } else if (emptyObjDayName === "Sat") {
         emptyObj[emptyObjDayName] = satTime;
         emptyObj["day"] = addedDay;
         emptyObj["month"] = month;
       } else {
-
-      emptyObj[emptyObjDayName] = dayTime;
-      emptyObj["day"] = addedDay;
-      emptyObj["month"] = month;
-
+        emptyObj[emptyObjDayName] = dayTime;
+        emptyObj["day"] = addedDay;
+        emptyObj["month"] = month;
       }
-    
-      //console.log(updatedSchedule)
 
+      //console.log(updatedSchedule)
 
       await Employee.findByIdAndUpdate(docs[i]._id, {
         schedule: updatedSchedule,
@@ -297,15 +315,27 @@ const updatedEmployeeScheduleDaily = () => {
 };
 
 // update schedule by the day
-schedule.scheduleJob('0 1 * * *', () => {
-  updatedEmployeeScheduleDaily()
+schedule.scheduleJob("0 1 * * *", () => {
+  updatedEmployeeScheduleDaily();
 });
 
-export const getEmployee = expressAsyncHandler(async (req, res) => {
+export const getEmployee = async (req, res) => {
   const findEmployee = await Employee.find();
 
+  for (const employee of findEmployee) {
+    const getObjectParams = {
+      Bucket: bucketName,
+      Key: employee.image,
+    };
+
+    const command = new GetObjectCommand(getObjectParams);
+    const url = await getSignedUrl(s3, command, { expiresIn: 30 });
+
+    employee.image = url;
+  }
+
   res.send(findEmployee);
-});
+};
 
 export const getEmployeeId = expressAsyncHandler(async (req, res) => {
   const findEmployeeId = await Employee.findById(req.params.id);
@@ -314,13 +344,18 @@ export const getEmployeeId = expressAsyncHandler(async (req, res) => {
 });
 
 export const deleteEmployeeById = expressAsyncHandler(async (req, res) => {
-  try {
-    const deleteEmployeeById = await Employee.findByIdAndDelete(req.params.id);
+  const deleteEmployeeById = await Employee.findByIdAndDelete(req.params.id);
 
-    res.send(deleteEmployeeById);
-  } catch (err) {
-    res.send({ message: err });
-  }
+  const params = {
+    Bucket: bucketName,
+    Key: deleteEmployeeById.image,
+  };
+
+  const command = new DeleteObjectCommand(params);
+
+  await s3.send(command);
+
+  res.send(deleteEmployeeById);
 });
 
 export const updateEmployeeById = expressAsyncHandler(async (req, res) => {

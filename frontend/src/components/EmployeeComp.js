@@ -14,7 +14,7 @@ export default function EmployeeComp(x) {
   return (
     <div>
       <Card className="mt-4 mb-5">
-        <Card.Img variant="top" src={require(`../img/${x.x.image}`)} />
+        <Card.Img variant="top" src={x.x.image} />
         <Card.ImgOverlay className="d-flex align-items-end">
           <div className="employee-info" style={{ color: "white" }}>
             <h4>{`${x.x.firstname} ${x.x.lastname}`}</h4>
