@@ -1,7 +1,6 @@
 import Appointments from "../Models/appointmentModel.js";
 import Employee from "../Models/employeeModel.js";
 import expressAsyncHandler from "express-async-handler";
-import schedule from "node-schedule";
 
 export const createAppointment = expressAsyncHandler(async (req, res) => {
   const createdAppointments = await Appointments.find({
@@ -82,40 +81,3 @@ export const getEmployeeAppointment = expressAsyncHandler(async (req, res) => {
   res.send(appointment);
 });
 
-const date = new Date();
-
-const monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-let currDay = date.getDate();
-let currMonth = monthNames[date.getMonth()];
-
-const checkIfAppointmentsArePastDate = () => {
-  Appointments.find(async (err, docs) => {
-    const docsLength = docs.length;
-
-    for (let i = 0; i < docsLength; i++) {
-      if (docs[i].active === true) {
-        if (currDay === +docs[i].day + 1 && currMonth === docs[i].month) {
-          await Appointments.findByIdAndUpdate(docs[i]._id, { active: false });
-        }
-      }
-    }
-  });
-};
-
-schedule.scheduleJob("0 1 * * *", () => {
-  checkIfAppointmentsArePastDate();
-});

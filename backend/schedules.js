@@ -1,6 +1,8 @@
+import Appointments from "./Models/appointmentModel.js";
 import Employee from "./Models/employeeModel.js";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import { sendInvoice } from "./sendEmail.js";
 dotenv.config();
 
 let dayTime = [
@@ -87,6 +89,9 @@ var negMillisecondsByFiveHours = -5 * 60 * 60 * 1000;
 var date = new Date(numberOfMlSeconds + negMillisecondsByFiveHours);
 
 let currMonth = date.getMonth();
+let appointmentCurrMonth = monthNames[date.getMonth()];
+let currDay = date.getDate();
+
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -172,16 +177,72 @@ const updatedEmployeeScheduleDaily = () => {
   });
 };
 
-// check if console.log() called for this function ex: node schedules.js updatedEmployeeScheduleDaily 
+// check if console.log() called for this function ex: node backend/schedules.js updatedEmployeeScheduleDaily 
 if (process.argv[2] === "updatedEmployeeScheduleDaily") {
   updatedEmployeeScheduleDaily();
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------
 
+// need to add year++ to updateemployee schedule and to creating employee schedule
+
+const checkIfAppointmentsArePastDate = () => {
+    Appointments.find(async (err, docs) => {
+      const docsLength = docs.length;
+  
+      for (let i = 0; i < docsLength; i++) {
+        if (docs[i].active === true) {
+          if (currDay === +docs[i].day + 1 && appointmentCurrMonth === docs[i].month) {
+            await Appointments.findByIdAndUpdate(docs[i]._id, { active: false });
+          }
+        }
+      }
+    });
+  };
 
 
+  if (process.argv[2] === "updatedEmployeeScheduleDaily") {
+    checkIfAppointmentsArePastDate();
+  }
 
+  //-----------------------------------------------------------------------------------------------------------------------------------------------------
 
+  // sum that will be used later to add cut prices
+let sum = 0;
 
+// cant be more than this number -- current day in miliseconds
+const today = Date.now();
 
+// cant be less than this number -- past 7 days in miliseconds
+const LastSevenDays = new Date() - 7 * 60 * 60 * 24 * 1000;
+
+const clientPayment = () => {
+  Appointments.find(async (err, docs) => {
+    const docsLength = docs.length;
+
+    for (let i = 0; i < docsLength; i++) {
+      // give the time appointments were made
+      let getDate = new Date(docs[i].createdAt);
+      // converting the appintment dates to miliseconds
+      let date = getDate.getTime();
+
+      if (date < today && date > LastSevenDays) {
+        // turn cut price into an int by putting plus first
+        let price = +docs[i].cutPrice;
+        sum += price;
+      }
+    }
+    // get sum of all the cuts in the past week and take 5% out
+    sum = sum * .05
+
+    //before sending email make the price readable
+    var str = Math.round((Math.abs(sum)))/100;
+  
+    sendInvoice(str)
+  });
+};
+
+// check if console.log() called for this function ex: node backend/schedules.js clientPayment
+if (process.argv[2] === "clientPayment") {
+    clientPayment();
+  }

@@ -1,11 +1,8 @@
 import dotenv from "dotenv";
-import schedule from "node-schedule";
-import { CronJob } from "cron";
 import Employee from "../Models/employeeModel.js";
 import expressAsyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
-
 import { generateEmployeeToken } from "../utils.js";
 import { sendEmail } from "../sendEmail.js";
 
@@ -252,87 +249,6 @@ export const createEmployee = expressAsyncHandler(async (req, res) => {
 
   res.send(employee);
 });
-
-const updatedEmployeeScheduleDaily = () => {
-  Employee.find(async (err, docs) => {
-    const docsLength = docs.length;
-    for (let i = 0; i < docsLength; i++) {
-      const updatedSchedule = docs[i].schedule;
-
-      updatedSchedule.shift();
-
-      const currDayNameArr = [];
-      const currDayArr = [];
-
-      for (let i = 0; i < updatedSchedule.length; i++) {
-        //dayNames
-        const objKeys = Object.keys(updatedSchedule[i]);
-        const objKeyDay = objKeys[0];
-        currDayNameArr.push(objKeyDay);
-        //day
-        currDayArr.push(updatedSchedule[i].day);
-      }
-
-      const getLastDayOfLimit = currDayNameArr[currDayNameArr.length - 1];
-      const getLastNum = currDayArr[currDayArr.length - 1];
-      let lastDayIndex = dayNames.indexOf(getLastDayOfLimit);
-
-      if (limit - 1 === lastDayIndex) {
-        lastDayIndex = -1;
-      }
-
-      let addedDay = getLastNum + 1;
-
-      if (getLastNum === daysInMonth[currMonth]) {
-        addedDay = 1;
-        currMonth = currMonth + 1;
-      }
-
-      let month = monthNames[currMonth];
-
-      let addingMec = lastDayIndex + 1;
-
-      if (addingMec === 7) {
-        addingMec = 0;
-      }
-
-      let emptyObjDayName = dayNames[addingMec];
-
-      let emptyObj = {};
-
-      updatedSchedule.push(emptyObj);
-
-      if (emptyObjDayName === "Sun") {
-        emptyObj[emptyObjDayName] = [];
-        emptyObj["day"] = addedDay;
-        emptyObj["month"] = month;
-      } else if (emptyObjDayName === "Sat") {
-        emptyObj[emptyObjDayName] = satTime;
-        emptyObj["day"] = addedDay;
-        emptyObj["month"] = month;
-      } else {
-        emptyObj[emptyObjDayName] = dayTime;
-        emptyObj["day"] = addedDay;
-        emptyObj["month"] = month;
-      }
-
-      //console.log(updatedSchedule)
-
-      await Employee.findByIdAndUpdate(docs[i]._id, {
-        schedule: updatedSchedule,
-      });
-
-      //console.log(updatedSchedule);
-    }
-  });
-};
-
-// update schedule by the day
-//let job = new CronJob('18 2 * * *', function() {
- // updatedEmployeeScheduleDaily();
-//})
-
-//job.start()
 
 export const getEmployee = async (req, res) => {
   const findEmployee = await Employee.find();
