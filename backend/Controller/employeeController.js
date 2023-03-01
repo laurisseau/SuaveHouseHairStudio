@@ -131,9 +131,19 @@ for (counter; counter > 0; counter--) {
     //loops through obj and add daytime to every day
     scheduleObj[dayNames[currDay + i]] = dayTime;
 
+    // obj days become undefined so replace the
+    //undefined with the actual days
+    if (scheduleObj[undefined]) {
+      let arr = [0, 6, 5, 4, 3, 2, 1];
+      delete scheduleObj[undefined];
+      let test = i - arr[currDay];
+      scheduleObj[dayNames[test]] = dayTime;
+    }
+
     // sun day is an off day
     if (scheduleObj.Sun) {
       scheduleObj[dayNames[0]] = [];
+      console.log(scheduleObj.Sun);
     }
 
     // sat day cut hours
@@ -141,18 +151,14 @@ for (counter; counter > 0; counter--) {
       scheduleObj[dayNames[6]] = satTime;
     }
 
-    if (scheduleObj[undefined]) {
-      let arr = [0, 6, 5, 4, 3, 2, 1];
-      delete scheduleObj[undefined];
-      let test = i - arr[currDay];
-      scheduleObj[dayNames[test]] = dayTime;
-    }
     scheduleObj["day"] = currDate++;
     scheduleObj["month"] = monthNames[currMonth];
+
     if (currDate > currentMonthDays) {
       currDate = 1;
       currMonth++;
     }
+
     employeeSchedule.push(scheduleObj);
     scheduleObj = {};
   }
@@ -170,11 +176,12 @@ if (rem > 0) {
       currDate = 1;
       currMonth++;
     }
+
     employeeSchedule.push(scheduleObj);
     scheduleObj = {};
   }
 }
-//console.log(employeeSchedule)
+//console.log(employeeSchedule);
 //-------------------------------UPLOADING IMAGES---------------------------------------*/
 
 const multerStorage = multer.memoryStorage();
