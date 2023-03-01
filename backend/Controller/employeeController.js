@@ -113,7 +113,13 @@ let employeeSchedule = [];
 let scheduleObj = {};
 let limit = 7;
 
-let date = new Date();
+var utcDate = new Date();
+//utc time is ahead of florida time by 5 hours
+var numberOfMlSeconds = utcDate.getTime();
+var negMillisecondsByFiveHours = -5 * 60 * 60 *1000;
+// florida date and time
+var date = new Date(numberOfMlSeconds + negMillisecondsByFiveHours);
+
 let currDay = date.getDay();
 let currDate = date.getDate();
 let currMonth = date.getMonth();
@@ -143,7 +149,6 @@ for (counter; counter > 0; counter--) {
     // sun day is an off day
     if (scheduleObj.Sun) {
       scheduleObj[dayNames[0]] = [];
-      console.log(scheduleObj.Sun);
     }
 
     // sat day cut hours
