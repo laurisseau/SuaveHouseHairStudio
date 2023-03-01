@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import schedule from "node-schedule";
+import { CronJob } from "cron";
 import Employee from "../Models/employeeModel.js";
 import expressAsyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
@@ -327,9 +328,12 @@ const updatedEmployeeScheduleDaily = () => {
 };
 
 // update schedule by the day
-schedule.scheduleJob("0 1 * * *", () => {
+
+let job = new CronJob('0 2 * * *', function() {
   updatedEmployeeScheduleDaily();
-});
+})
+
+job.start()
 
 export const getEmployee = async (req, res) => {
   const findEmployee = await Employee.find();
