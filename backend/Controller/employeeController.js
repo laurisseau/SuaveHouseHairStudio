@@ -328,11 +328,11 @@ const updatedEmployeeScheduleDaily = () => {
 };
 
 // update schedule by the day
-let job = new CronJob('18 2 * * *', function() {
-  updatedEmployeeScheduleDaily();
-})
+//let job = new CronJob('18 2 * * *', function() {
+ // updatedEmployeeScheduleDaily();
+//})
 
-job.start()
+//job.start()
 
 export const getEmployee = async (req, res) => {
   const findEmployee = await Employee.find();
