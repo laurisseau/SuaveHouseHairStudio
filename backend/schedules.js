@@ -89,9 +89,8 @@ var negMillisecondsByFiveHours = -5 * 60 * 60 * 1000;
 var date = new Date(numberOfMlSeconds + negMillisecondsByFiveHours);
 
 let currMonth = date.getMonth();
-let appointmentCurrMonth = monthNames[date.getMonth()];
+//let appointmentCurrMonth = monthNames[date.getMonth()];
 let currDay = date.getDate();
-
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -132,13 +131,20 @@ const updatedEmployeeScheduleDaily = () => {
       }
 
       let addedDay = getLastNum + 1;
+      //
+      let currDataMonth = monthNames.indexOf(docs[i].schedule[5].month);
 
-      if (getLastNum === daysInMonth[currMonth]) {
+      // goes to the next month if december starts months over
+
+      if (getLastNum === daysInMonth[currDataMonth] && currDataMonth === 11) {
         addedDay = 1;
-        currMonth = currMonth + 1;
+        currDataMonth = 0;
+      } else if (getLastNum === daysInMonth[currDataMonth]) {
+        addedDay = 1;
+        currDataMonth = currDataMonth + 1;
       }
 
-      let month = monthNames[currMonth];
+      let month = monthNames[currDataMonth];
 
       let addingMec = lastDayIndex + 1;
 
@@ -166,18 +172,14 @@ const updatedEmployeeScheduleDaily = () => {
         emptyObj["month"] = month;
       }
 
-      //console.log(updatedSchedule)
-
       await Employee.findByIdAndUpdate(docs[i]._id, {
         schedule: updatedSchedule,
       });
-
-      //console.log(updatedSchedule);
     }
   });
 };
 
-// check if console.log() called for this function ex: node backend/schedules.js updatedEmployeeScheduleDaily 
+// check if console.log() called for this function ex: node backend/schedules.js updatedEmployeeScheduleDaily
 if (process.argv[2] === "updatedEmployeeScheduleDaily") {
   updatedEmployeeScheduleDaily();
 }
@@ -187,27 +189,35 @@ if (process.argv[2] === "updatedEmployeeScheduleDaily") {
 // need to add year++ to updateemployee schedule and to creating employee schedule
 
 const checkIfAppointmentsArePastDate = () => {
-    Appointments.find(async (err, docs) => {
-      const docsLength = docs.length;
-  
-      for (let i = 0; i < docsLength; i++) {
-        if (docs[i].active === true) {
-          if (currDay === +docs[i].day + 1 && appointmentCurrMonth === docs[i].month) {
-            await Appointments.findByIdAndUpdate(docs[i]._id, { active: false });
-          }
-        }
+  Appointments.find(async (err, docs) => {
+    const docsLength = docs.length;
+
+    for (let i = 0; i < docsLength; i++) {
+      const appointmentMonth = monthNames.indexOf(docs[i].month);
+
+      //if current month is greater than the appointment month then
+      // appointmentday = 0
+      if (currMonth > appointmentMonth) {
+        docs[i].day = 0;
       }
-    });
-  };
 
+      // if the current day is larger than any appaointment date
+      // the dates under the current date will turn inactive
+      if (currDay > docs[i].day) {
+        await Appointments.findByIdAndUpdate(docs[i]._id, { active: false });
+      }
+    }
+  });
+};
 
-  if (process.argv[2] === "updatedEmployeeScheduleDaily") {
-    checkIfAppointmentsArePastDate();
-  }
+// check if console.log() called for this function ex: node backend/schedules.js checkIfAppointmentsArePastDate
+if (process.argv[2] === "checkIfAppointmentsArePastDate") {
+  checkIfAppointmentsArePastDate();
+}
 
-  //-----------------------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------------------------------------------
 
-  // sum that will be used later to add cut prices
+// sum that will be used later to add cut prices
 let sum = 0;
 
 // cant be more than this number -- current day in miliseconds
@@ -233,16 +243,16 @@ const clientPayment = () => {
       }
     }
     // get sum of all the cuts in the past week and take 5% out
-    sum = sum * .05
+    sum = sum * 0.05;
 
     //before sending email make the price readable
-    var str = Math.round((Math.abs(sum)))/100;
-  
-    sendInvoice(str)
+    var str = Math.round(Math.abs(sum)) / 100;
+
+    sendInvoice(str);
   });
 };
 
 // check if console.log() called for this function ex: node backend/schedules.js clientPayment
 if (process.argv[2] === "clientPayment") {
-    clientPayment();
-  }
+  clientPayment();
+}
