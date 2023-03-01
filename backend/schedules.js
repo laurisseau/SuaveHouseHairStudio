@@ -172,7 +172,7 @@ const updatedEmployeeScheduleDaily = () => {
   });
 };
 
-// check if console.log() called for this function
+// check if console.log() called for this function ex: node schedules.js updatedEmployeeScheduleDaily 
 if (process.argv[2] === "updatedEmployeeScheduleDaily") {
   updatedEmployeeScheduleDaily();
 }
