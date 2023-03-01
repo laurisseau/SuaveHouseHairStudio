@@ -99,7 +99,7 @@ export default function ModalComp(props) {
         navigate(`/appointments`);
       }
 
-      setScheduleObj(data);
+      setScheduleObj(data.employee.schedule);
     } catch (err) {
       toast.error(getError(err));
       setLoading(false);

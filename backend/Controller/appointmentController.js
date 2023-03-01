@@ -47,7 +47,7 @@ export const createAppointment = expressAsyncHandler(async (req, res) => {
 
   //console.log(updateEmployee.schedule)
 
-  res.send(schedule);
+  res.send(appointment);
 });
 
 export const getAppointment = expressAsyncHandler(async (req, res) => {
