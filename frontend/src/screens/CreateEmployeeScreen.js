@@ -29,8 +29,9 @@ export default function CreateEmployeeScreen() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    setIsCreating(true);
+
     try {
+      setIsCreating(true);
       const formData = new FormData();
 
       formData.append("firstname", firstname);
@@ -55,6 +56,7 @@ export default function CreateEmployeeScreen() {
     } catch (err) {
       toast.error(getError(err));
       //console.log(err)
+      setIsCreating(false);
     }
   };
 
