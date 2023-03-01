@@ -328,8 +328,7 @@ const updatedEmployeeScheduleDaily = () => {
 };
 
 // update schedule by the day
-
-let job = new CronJob('0 2 * * *', function() {
+let job = new CronJob('18 2 * * *', function() {
   updatedEmployeeScheduleDaily();
 })
 
