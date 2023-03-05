@@ -58,7 +58,7 @@ export default function HomeScreen() {
         <NavbarComp />
 
         <div className="title">
-          <h3>- Magic Style -</h3>
+          <h3>- Suave House -</h3>
           <h1>BARBERSHOP</h1>
         </div>
       </header>
@@ -83,17 +83,19 @@ export default function HomeScreen() {
             <div>
               <h1>About Us</h1>
               <p style={{ fontSize: "18px", lineHeight: "2" }}>
-                Welcome to Magic Style Barber Shop, your premier family barber
-                shop in Orlando, FL. We specialize in a wide spectrum of hair
-                and beard trimming services, ensuring that you get the utmost
-                level of quality and professionalism. Our barbers strive to meet
-                and exceed your expectations! With more than 10 years of
-                experience, our family-owned barber shop is passionate about
-                delivering only the finest and highest quality service for all
-                our clients. With a keen eye for detail, we want to make sure
-                that you are completely satisfied with the results. Contact or
-                visit us at Magic Style Barber Shop today and let us show you
-                how committed we are to ensuring superior quality service!
+                Welcome to our barber shop! We are dedicated to providing
+                exceptional grooming services to all of our clients. Our skilled
+                barbers have years of experience and are passionate about their
+                craft, which means you can trust us to give you a haircut that
+                looks great and suits your unique style. Our shop is designed to
+                create a comfortable and welcoming environment for everyone who
+                walks through our doors. We believe that getting a haircut
+                should be a relaxing and enjoyable experience, which is why we
+                go the extra mile to make sure our clients feel at home. We
+                offer a range of services, including haircuts, beard trims, hot
+                towel shaves, and more. We use only the highest-quality
+                products, so you can be sure that your hair and skin will be
+                treated with care and attention.
               </p>
             </div>
           </Col>
@@ -148,10 +150,9 @@ export default function HomeScreen() {
                   WHAT THEY SAID
                 </p>
                 <p style={{ fontSize: "28px", paddingTop: "" }}>
-                  IT'S JUST A GREAT GROUP OF GUYS MAKING THE WORLD A BETTER
-                  LOOKING PLACE
+                  Overall, I would highly recommend this barbershop to anyone looking for a great haircut and an enjoyable experience.
                 </p>
-                <p style={{ fontSize: "24px" }}>AMANDA</p>
+                <p style={{ fontSize: "24px" }}>JOHN</p>
               </div>
             </div>
             <Row>
@@ -162,14 +163,14 @@ export default function HomeScreen() {
       </Container>
 
       <footer
-        style={{ backgroundColor: "#000", height: "170px", color: "white" }}
+        style={{ backgroundColor: "#252525", height: "170px", color: "white" }}
       >
         <Container
           className="d-flex justify-content-md-between align-items-center flex-wrap justify-content-center"
           style={{ height: "100%" }}
         >
           <div>
-            <h1 style={{ fontSize: "18px" }}>© 2022 PARKER'S BARBER SHOP</h1>
+            <h1 style={{ fontSize: "18px" }}>© 2023 SUAVE HOUSE BARBER SHOP</h1>
             <div className="d-flex justify-content-center ">
               <Link to="/employeeSignin">Employee?</Link>
             </div>
