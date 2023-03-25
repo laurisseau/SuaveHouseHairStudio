@@ -32,50 +32,6 @@ const s3 = new S3Client({
   region: bucketRegion,
 });
 
-let dayTime = [
-  "8:00am",
-  "8:30am",
-  "9:00am",
-  "9:30am",
-  "10:30am",
-  "11:00am",
-  "11:30am",
-  "12:00pm",
-  "12:30pm",
-  "1:00pm",
-  "1:30pm",
-  "2:00pm",
-  "2:30pm",
-  "3:00pm",
-  "3:30pm",
-  "4:00pm",
-  "4:30pm",
-  "5:00pm",
-  "5:30pm",
-  "6:00pm",
-  "6:30pm",
-  "7:30pm",
-];
-
-let satTime = [
-  "9:00am",
-  "9:30am",
-  "10:30am",
-  "11:00am",
-  "11:30am",
-  "12:00pm",
-  "12:30pm",
-  "1:00pm",
-  "1:30pm",
-  "2:00pm",
-  "2:30pm",
-  "3:00pm",
-  "3:30pm",
-  "4:00pm",
-  "4:30pm",
-  "5:00pm",
-];
-
 const daysInMonth = {
   0: 31,
   1: 28,
@@ -114,7 +70,7 @@ let limit = 7;
 var utcDate = new Date();
 //utc time is ahead of florida time by 5 hours
 var numberOfMlSeconds = utcDate.getTime();
-var negMillisecondsByFiveHours = -5 * 60 * 60 *1000;
+var negMillisecondsByFiveHours = -5 * 60 * 60 * 1000;
 // florida date and time
 var date = new Date(numberOfMlSeconds + negMillisecondsByFiveHours);
 
@@ -125,66 +81,8 @@ let currentMonthDays = daysInMonth[currMonth];
 
 let year = date.getFullYear();
 let length = currDate + limit;
-//-----------------------------------------------
 let counter = Math.trunc(limit / 7);
 
-//need if statement for new employees
-
-for (counter; counter > 0; counter--) {
-  for (let i = 0; i < dayNames.length; i++) {
-    //loops through obj and add daytime to every day
-    scheduleObj[dayNames[currDay + i]] = dayTime;
-
-    // obj days become undefined so replace the
-    //undefined with the actual days
-    if (scheduleObj[undefined]) {
-      let arr = [0, 6, 5, 4, 3, 2, 1];
-      delete scheduleObj[undefined];
-      let test = i - arr[currDay];
-      scheduleObj[dayNames[test]] = dayTime;
-    }
-
-    // sun day is an off day
-    if (scheduleObj.Sun) {
-      scheduleObj[dayNames[0]] = [];
-    }
-
-    // sat day cut hours
-    if (scheduleObj.Sat) {
-      scheduleObj[dayNames[6]] = satTime;
-    }
-
-    scheduleObj["day"] = currDate++;
-    scheduleObj["month"] = monthNames[currMonth];
-
-    if (currDate > currentMonthDays) {
-      currDate = 1;
-      currMonth++;
-    }
-
-    employeeSchedule.push(scheduleObj);
-    scheduleObj = {};
-  }
-}
-
-let count = Math.trunc(limit / 7);
-let rem = limit - count * 7;
-
-if (rem > 0) {
-  for (let j = currDay; j < currDay + rem; j++) {
-    scheduleObj[dayNames[j]] = dayTime;
-    scheduleObj["day"] = currDate++;
-    scheduleObj["month"] = monthNames[currMonth];
-    if (currDate > currentMonthDays) {
-      currDate = 1;
-      currMonth++;
-    }
-
-    employeeSchedule.push(scheduleObj);
-    scheduleObj = {};
-  }
-}
-//console.log(employeeSchedule);
 //-------------------------------UPLOADING IMAGES---------------------------------------*/
 
 const multerStorage = multer.memoryStorage();
@@ -229,6 +127,114 @@ export const resizeUserPhoto = expressAsyncHandler(async (req, res, next) => {
 });
 
 export const createEmployee = expressAsyncHandler(async (req, res) => {
+  let dayTime = [];
+  let satTime = [];
+
+  if (req.body.position === "Barber") {
+    dayTime = [
+      "8:00am",
+      "8:30am",
+      "9:00am",
+      "9:30am",
+      "10:30am",
+      "11:00am",
+      "11:30am",
+      "12:00pm",
+      "12:30pm",
+      "1:00pm",
+      "1:30pm",
+      "2:00pm",
+      "2:30pm",
+      "3:00pm",
+      "3:30pm",
+      "4:00pm",
+      "4:30pm",
+      "5:00pm",
+      "5:30pm",
+      "6:00pm",
+      "6:30pm",
+      "7:30pm",
+    ];
+
+    satTime = [
+      "9:00am",
+      "9:30am",
+      "10:30am",
+      "11:00am",
+      "11:30am",
+      "12:00pm",
+      "12:30pm",
+      "1:00pm",
+      "1:30pm",
+      "2:00pm",
+      "2:30pm",
+      "3:00pm",
+      "3:30pm",
+      "4:00pm",
+      "4:30pm",
+      "5:00pm",
+    ];
+  } else if (req.body.position === "Hairstylist") {
+    dayTime = ["8:00am", "11:00am", "2:00pm", "5:00pm", "8:00pm"];
+
+    satTime = ["12:00pm", "3:00pm", "6:00pm"];
+  }
+
+  for (counter; counter > 0; counter--) {
+    for (let i = 0; i < dayNames.length; i++) {
+      //loops through obj and add daytime to every day
+      scheduleObj[dayNames[currDay + i]] = dayTime;
+
+      // obj days become undefined so replace the
+      //undefined with the actual days
+      if (scheduleObj[undefined]) {
+        let arr = [0, 6, 5, 4, 3, 2, 1];
+        delete scheduleObj[undefined];
+        let test = i - arr[currDay];
+        scheduleObj[dayNames[test]] = dayTime;
+      }
+
+      // sun day is an off day
+      if (scheduleObj.Sun) {
+        scheduleObj[dayNames[0]] = [];
+      }
+
+      // sat day cut hours
+      if (scheduleObj.Sat) {
+        scheduleObj[dayNames[6]] = satTime;
+      }
+
+      scheduleObj["day"] = currDate++;
+      scheduleObj["month"] = monthNames[currMonth];
+
+      if (currDate > currentMonthDays) {
+        currDate = 1;
+        currMonth++;
+      }
+
+      employeeSchedule.push(scheduleObj);
+      scheduleObj = {};
+    }
+  }
+
+  let count = Math.trunc(limit / 7);
+  let rem = limit - count * 7;
+
+  if (rem > 0) {
+    for (let j = currDay; j < currDay + rem; j++) {
+      scheduleObj[dayNames[j]] = dayTime;
+      scheduleObj["day"] = currDate++;
+      scheduleObj["month"] = monthNames[currMonth];
+      if (currDate > currentMonthDays) {
+        currDate = 1;
+        currMonth++;
+      }
+
+      employeeSchedule.push(scheduleObj);
+      scheduleObj = {};
+    }
+  }
+
   const newEmployee = new Employee({
     firstname: req.body.firstname,
     lastname: req.body.lastname,
