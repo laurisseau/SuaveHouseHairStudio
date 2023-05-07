@@ -38,6 +38,9 @@ export default function PaymentForm() {
       );
 
       if (data) {
+
+        
+
         window.location.href = "/appointments"
       }
     }

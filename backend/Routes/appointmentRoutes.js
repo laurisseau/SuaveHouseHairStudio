@@ -5,6 +5,7 @@ import {
   getAppointmentId,
   updatePaidAppointment,
   getEmployeeAppointment,
+  spliceAppointment
 } from "../Controller/appointmentController.js";
 import { isAuth, isAuthEmployee } from "../utils.js";
 
@@ -20,6 +21,7 @@ appointmentRouter.get("/getAppointment", isAuth, getAppointment);
 
 appointmentRouter.get("/getAppointment/:id", isAuth, getAppointmentId);
 appointmentRouter.put("/updatePaidAppointment/:id", updatePaidAppointment);
+appointmentRouter.get("/spliceAppointment", spliceAppointment);
 appointmentRouter.post("/createAppointment", createAppointment);
 
 export default appointmentRouter;

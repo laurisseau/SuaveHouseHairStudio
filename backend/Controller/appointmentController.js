@@ -20,6 +20,7 @@ export const createAppointment = expressAsyncHandler(async (req, res) => {
     }
   }
 
+  /*
   const appointment = await (
     await Appointments.create(req.body)
   ).populate("employee");
@@ -46,9 +47,50 @@ export const createAppointment = expressAsyncHandler(async (req, res) => {
   );
 
   //console.log(updateEmployee.schedule)
-
-  res.send(appointment);
+*/
+  res.send(createdAppointments);
 });
+
+
+export const spliceAppointment = expressAsyncHandler(async(req, res) => {
+
+  //const findUserAppointment = await Appointments.findById(req.params.id);
+
+  /*
+  const appointment = await (
+    await Appointments.create(req.body)
+  ).populate("employee");
+
+  const schedule = appointment.employee.schedule;
+  const appointmentDay = appointment.day;
+  const appointmentDayName = appointment.dayName;
+  const appointmentTime = appointment.time;
+
+  for (let i = 0; i < schedule.length; i++) {
+    if (schedule[i].day == appointmentDay) {
+      const sch = schedule[i];
+      const schArr = sch[appointmentDayName];
+      const index = schArr.indexOf(`${appointmentTime}`);
+      schArr.splice(index, 1);
+    }
+  }
+
+  //console.log(schedule)
+
+  const updateEmployee = await Employee.findByIdAndUpdate(
+    appointment.employee._id,
+    { schedule: schedule }
+  );
+
+  //console.log(updateEmployee.schedule)
+*/
+
+//console.log(findUserAppointment)
+//res.send(findUserAppointment);
+res.send('hi')
+console.log('hi')
+})
+
 
 export const getAppointment = expressAsyncHandler(async (req, res) => {
   const appointment = await Appointments.find({
@@ -67,10 +109,15 @@ export const getAppointmentId = expressAsyncHandler(async (req, res) => {
 });
 
 export const updatePaidAppointment = expressAsyncHandler(async (req, res) => {
-  const appointment = await Appointments.findByIdAndUpdate(req.params.id, {
+  const updatePaidAppointment = await Appointments.findByIdAndUpdate(req.params.id, {
     paid: "Paid",
   });
-  res.send(appointment);
+
+
+
+
+
+  res.send(updatePaidAppointment);
 });
 
 export const getEmployeeAppointment = expressAsyncHandler(async (req, res) => {
