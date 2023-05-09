@@ -47,12 +47,12 @@ const employeeSchema = new mongoose.Schema(
 
     publishableKey: {
       type: String,
-      require: [true, "A phone publishable key is required"], // test
+      require: [true, "A publishable key is required"], // test
     },
 
-    key: {
+    secretKey: {
       type: String,
-      require: [true, "A phone key is required"], // test
+      require: [true, "A key is required"], // test
     },
 
     iv: {

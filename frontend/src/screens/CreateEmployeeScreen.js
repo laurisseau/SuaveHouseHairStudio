@@ -18,7 +18,7 @@ export default function CreateEmployeeScreen() {
   const [email, setEmail] = useState("");
   const [number, setNumber] = useState("");
   const [password, setPassword] = useState("");
-  const [key, setKey] = useState("");
+  const [secretKey, setSecretKey] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [position, setPosition] = useState("");
   const [isEmployee, setIsEmployee] = useState("");
@@ -39,7 +39,7 @@ export default function CreateEmployeeScreen() {
       formData.append("email", email);
       formData.append("number", number);
       formData.append("publishableKey", publishableKey);
-      formData.append("key", key);
+      formData.append("secretKey", secretKey);
       formData.append("password", password);
       formData.append("confirmPassword", confirmPassword);
       formData.append("position", position);
@@ -126,7 +126,7 @@ export default function CreateEmployeeScreen() {
             <Form.Control
               type="Key"
               required
-              onChange={(e) => setKey(e.target.value)}
+              onChange={(e) => setSecretKey(e.target.value)}
             />
           </Form.Group>
 

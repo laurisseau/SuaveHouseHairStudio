@@ -20,7 +20,7 @@ export const createAppointment = expressAsyncHandler(async (req, res) => {
     }
   }
 
-  /*
+  
   const appointment = await (
     await Appointments.create(req.body)
   ).populate("employee");
@@ -39,7 +39,7 @@ export const createAppointment = expressAsyncHandler(async (req, res) => {
     }
   }
 
-  //console.log(schedule)
+  console.log(schedule)
 
   const updateEmployee = await Employee.findByIdAndUpdate(
     appointment.employee._id,
@@ -47,7 +47,7 @@ export const createAppointment = expressAsyncHandler(async (req, res) => {
   );
 
   //console.log(updateEmployee.schedule)
-*/
+
   res.send(createdAppointments);
 });
 

@@ -1,23 +1,23 @@
-import dotenv from "dotenv";
-import Employee from "../Models/employeeModel.js";
-import expressAsyncHandler from "express-async-handler";
-import bcrypt from "bcryptjs";
-import crypto from "crypto";
-import { generateEmployeeToken } from "../utils.js";
-import { sendEmail } from "../sendEmail.js";
+import dotenv from 'dotenv';
+import Employee from '../Models/employeeModel.js';
+import expressAsyncHandler from 'express-async-handler';
+import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
+import { generateEmployeeToken } from '../utils.js';
+import { sendEmail } from '../sendEmail.js';
 
 import {
   S3Client,
   PutObjectCommand,
   GetObjectCommand,
   DeleteObjectCommand,
-} from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+} from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
-import multer from "multer";
-import sharp from "sharp";
+import multer from 'multer';
+import sharp from 'sharp';
 
-dotenv.config({ path: "../config.env" });
+dotenv.config({ path: '../config.env' });
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -48,21 +48,21 @@ const daysInMonth = {
 };
 
 const monthNames = [
-  "January",
-  "Febuary",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  'January',
+  'Febuary',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
-let dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+let dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 let employeeSchedule = [];
 let scheduleObj = {};
 let limit = 7;
@@ -88,10 +88,10 @@ let counter = Math.trunc(limit / 7);
 const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image")) {
+  if (file.mimetype.startsWith('image')) {
     cb(null, true);
   } else {
-    cb(new AppError("Not an image! Please upload only images.", 400), false);
+    cb(new AppError('Not an image! Please upload only images.', 400), false);
   }
 };
 
@@ -100,13 +100,13 @@ const upload = multer({
   fileFilter: multerFilter,
 });
 
-export const uploadUserPhoto = upload.single("image");
+export const uploadUserPhoto = upload.single('image');
 
 export const resizeUserPhoto = expressAsyncHandler(async (req, res, next) => {
   if (!req.file) return next();
 
   const randomImageName = (bytes = 32) =>
-    crypto.randomBytes(bytes).toString("hex");
+    crypto.randomBytes(bytes).toString('hex');
 
   const buffer = await sharp(req.file.buffer).resize(350, 475).toBuffer();
 
@@ -130,54 +130,54 @@ export const createEmployee = expressAsyncHandler(async (req, res) => {
   let dayTime = [];
   let satTime = [];
 
-  if (req.body.position === "Barber") {
+  if (req.body.position === 'Barber') {
     dayTime = [
-      "8:00am",
-      "8:30am",
-      "9:00am",
-      "9:30am",
-      "10:30am",
-      "11:00am",
-      "11:30am",
-      "12:00pm",
-      "12:30pm",
-      "1:00pm",
-      "1:30pm",
-      "2:00pm",
-      "2:30pm",
-      "3:00pm",
-      "3:30pm",
-      "4:00pm",
-      "4:30pm",
-      "5:00pm",
-      "5:30pm",
-      "6:00pm",
-      "6:30pm",
-      "7:30pm",
+      '8:00am',
+      '8:30am',
+      '9:00am',
+      '9:30am',
+      '10:30am',
+      '11:00am',
+      '11:30am',
+      '12:00pm',
+      '12:30pm',
+      '1:00pm',
+      '1:30pm',
+      '2:00pm',
+      '2:30pm',
+      '3:00pm',
+      '3:30pm',
+      '4:00pm',
+      '4:30pm',
+      '5:00pm',
+      '5:30pm',
+      '6:00pm',
+      '6:30pm',
+      '7:30pm',
     ];
 
     satTime = [
-      "9:00am",
-      "9:30am",
-      "10:30am",
-      "11:00am",
-      "11:30am",
-      "12:00pm",
-      "12:30pm",
-      "1:00pm",
-      "1:30pm",
-      "2:00pm",
-      "2:30pm",
-      "3:00pm",
-      "3:30pm",
-      "4:00pm",
-      "4:30pm",
-      "5:00pm",
+      '9:00am',
+      '9:30am',
+      '10:30am',
+      '11:00am',
+      '11:30am',
+      '12:00pm',
+      '12:30pm',
+      '1:00pm',
+      '1:30pm',
+      '2:00pm',
+      '2:30pm',
+      '3:00pm',
+      '3:30pm',
+      '4:00pm',
+      '4:30pm',
+      '5:00pm',
     ];
-  } else if (req.body.position === "Hairstylist") {
-    dayTime = ["8:00am", "11:00am", "2:00pm", "5:00pm", "8:00pm"];
+  } else if (req.body.position === 'Hairstylist') {
+    dayTime = ['8:00am', '11:00am', '2:00pm', '5:00pm', '8:00pm'];
 
-    satTime = ["12:00pm", "3:00pm", "6:00pm"];
+    satTime = ['12:00pm', '3:00pm', '6:00pm'];
   }
 
   for (counter; counter > 0; counter--) {
@@ -204,8 +204,8 @@ export const createEmployee = expressAsyncHandler(async (req, res) => {
         scheduleObj[dayNames[6]] = satTime;
       }
 
-      scheduleObj["day"] = currDate++;
-      scheduleObj["month"] = monthNames[currMonth];
+      scheduleObj['day'] = currDate++;
+      scheduleObj['month'] = monthNames[currMonth];
 
       if (currDate > currentMonthDays) {
         currDate = 1;
@@ -223,8 +223,8 @@ export const createEmployee = expressAsyncHandler(async (req, res) => {
   if (rem > 0) {
     for (let j = currDay; j < currDay + rem; j++) {
       scheduleObj[dayNames[j]] = dayTime;
-      scheduleObj["day"] = currDate++;
-      scheduleObj["month"] = monthNames[currMonth];
+      scheduleObj['day'] = currDate++;
+      scheduleObj['month'] = monthNames[currMonth];
       if (currDate > currentMonthDays) {
         currDate = 1;
         currMonth++;
@@ -240,7 +240,7 @@ export const createEmployee = expressAsyncHandler(async (req, res) => {
     lastname: req.body.lastname,
     email: req.body.email,
     publishableKey: req.body.publishableKey,
-    key: req.body.key,
+    secretKey: req.body.secretKey,
     iv: req.body.iv,
     password: req.body.password,
     confirmPassword: req.body.confirmPassword,
@@ -320,7 +320,7 @@ export const signin = expressAsyncHandler(async (req, res) => {
       return;
     }
   }
-  res.status(401).send({ message: "Invalid email or password" });
+  res.status(401).send({ message: 'Invalid email or password' });
 });
 
 export const employeeForgotPassword = expressAsyncHandler(
@@ -331,7 +331,7 @@ export const employeeForgotPassword = expressAsyncHandler(
       return next(
         res
           .status(404)
-          .send({ message: "there is noone with that email Address" })
+          .send({ message: 'there is noone with that email Address' })
       );
     }
 
@@ -347,12 +347,12 @@ export const employeeForgotPassword = expressAsyncHandler(
       // )}/resetPassword/${resetToken}`;
 
       const resetURL = `${req.protocol}://${req.get(
-        "x-forwarded-host"
+        'x-forwarded-host'
       )}/resetEmployeePassword/${resetToken}`;
 
       sendEmail(req.body.email, resetURL);
 
-      res.send({ message: "token sent to email" });
+      res.send({ message: 'token sent to email' });
     } catch (err) {
       employee.createPasswordResetToken = undefined;
       employee.passwordResetExpires = undefined;
@@ -361,7 +361,7 @@ export const employeeForgotPassword = expressAsyncHandler(
       console.log(err);
 
       return next(
-        res.status(500).send({ message: "there was an error sending an email" })
+        res.status(500).send({ message: 'there was an error sending an email' })
       );
     }
   }
@@ -370,9 +370,9 @@ export const employeeForgotPassword = expressAsyncHandler(
 export const resetEmployeePassword = expressAsyncHandler(
   async (req, res, next) => {
     const hashedToken = crypto
-      .createHash("sha256")
+      .createHash('sha256')
       .update(req.params.token)
-      .digest("hex");
+      .digest('hex');
 
     const employee = await Employee.findOne({
       createPasswordResetToken: hashedToken,
@@ -381,7 +381,7 @@ export const resetEmployeePassword = expressAsyncHandler(
 
     if (!employee) {
       return next(
-        res.status(400).send({ message: "time to update password expired" })
+        res.status(400).send({ message: 'time to update password expired' })
       );
     }
 
@@ -392,6 +392,6 @@ export const resetEmployeePassword = expressAsyncHandler(
 
     await employee.save();
 
-    res.send({ message: "password Changed" });
+    res.send({ message: 'password Changed' });
   }
 );

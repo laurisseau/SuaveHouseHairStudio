@@ -31,6 +31,7 @@ const handleValidatorErrorDB = (err) => {
 };
 
 const prodErrors = (err, req, res) => {
+  console.log(err)
   return res.status(404).json({ message: err });
 };
 
