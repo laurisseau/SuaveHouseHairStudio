@@ -106,12 +106,13 @@ export default function ModalComp(props) {
     }
   };
 
+  //console.log(cutPrice, employee, employeeKey, employeeIv)
+
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    setLoading(true);
-
     try {
+      setLoading(true);
       if (paymentMethod === "Pay now") {
         const clientData = await axios.post("api/create-payment-intent", {
           amount: cutPrice,
@@ -121,12 +122,14 @@ export default function ModalComp(props) {
         });
 
         const clientSecret = clientData.data.clientSecret;
-
+        setLoading(false);
         createAppointmentFunc(clientSecret, paymentMethod);
       } else {
+        setLoading(false);
         createAppointmentFunc("", paymentMethod);
       }
     } catch (err) {
+      setLoading(false);
       console.log(err);
     }
   };

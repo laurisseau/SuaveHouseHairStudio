@@ -104,18 +104,18 @@ employeeSchema.pre("save", async function (next) {
 //------------------------------------------
 
 employeeSchema.pre("save", async function (next) {
-  if (!this.isModified("key")) return next();
+  if (!this.isModified("secretKey")) return next();
 
   const algorithm = "aes-256-cbc";
   const secretKey = process.env.ENCRYPT_AND_DECRYPT_KEY;
   const iv = crypto.randomBytes(16);
 
   const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
-  let encryptedData = cipher.update(this.key, "utf-8", "hex");
+  let encryptedData = cipher.update(this.secretKey, "utf-8", "hex");
   encryptedData += cipher.final("hex");
   const base64data = Buffer.from(iv, "binary").toString("base64");
 
-  this.key = encryptedData;
+  this.secretKey = encryptedData;
   this.iv = base64data;
 
   next();

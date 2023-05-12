@@ -2,6 +2,7 @@ import Appointments from "../Models/appointmentModel.js";
 import Employee from "../Models/employeeModel.js";
 import expressAsyncHandler from "express-async-handler";
 
+
 export const createAppointment = expressAsyncHandler(async (req, res) => {
   const createdAppointments = await Appointments.find({
     time: req.body.time,
@@ -38,8 +39,6 @@ export const createAppointment = expressAsyncHandler(async (req, res) => {
       schArr.splice(index, 1);
     }
   }
-
-  console.log(schedule)
 
   const updateEmployee = await Employee.findByIdAndUpdate(
     appointment.employee._id,
