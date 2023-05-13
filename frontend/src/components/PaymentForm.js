@@ -33,14 +33,16 @@ export default function PaymentForm() {
     if (error) {
       console.log(error);
     } else if (paymentIntent && paymentIntent.status === "succeeded") {
+
       const { data } = await axios.put(
         `/api/appointment/updatePaidAppointment/${id}`
       );
 
-      if (data) {
+      const { splice } = await axios.put(
+        `/api/appointment/spliceAppointment/${id}`
+      );
 
-        
-
+      if (data && splice) {
         window.location.href = "/appointments"
       }
     }

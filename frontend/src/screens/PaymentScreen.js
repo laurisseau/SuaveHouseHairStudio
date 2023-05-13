@@ -17,6 +17,8 @@ export default function PaymentScreen() {
   const [clientData, setClientData] = useState("");
   const [publishableKey, setPublishableKey] = useState("123");
 
+  
+
   useEffect(() => {
     const fetchData2 = async () => {
       try {

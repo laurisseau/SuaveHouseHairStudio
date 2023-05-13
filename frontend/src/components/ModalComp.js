@@ -55,7 +55,7 @@ export default function ModalComp(props) {
 
   let sv = Object.values(props.id.schedule);
   const employee = props.id._id;
-  const employeeKey = props.id.key;
+  const employeeKey = props.id.secretKey;
   const employeeIv = props.id.iv;
   const user = !state.userInfo ? null : state.userInfo._id;
 
@@ -68,7 +68,8 @@ export default function ModalComp(props) {
   const [day, setDay] = useState(Object.values(firstObj)[1]);
   const [month, setMonth] = useState(Object.values(firstObj)[2]);
   const [dayName, setDayName] = useState(Object.keys(firstObj)[0]);
-  const [scheduleObj, setScheduleObj] = useState(sv);
+  //const [scheduleObj, setScheduleObj] = useState(sv);
+  const scheduleObj = sv
 
   const numObj = scheduleObj[num];
 
@@ -99,9 +100,11 @@ export default function ModalComp(props) {
         navigate(`/appointments`);
       }
 
-      setScheduleObj(data.employee.schedule);
+      //setScheduleObj(data.employee.schedule);
+      //console.log(data.employee.schedule)
     } catch (err) {
       toast.error(getError(err));
+      console.log(err)
       setLoading(false);
     }
   };

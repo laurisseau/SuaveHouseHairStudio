@@ -2,7 +2,6 @@ import Appointments from "../Models/appointmentModel.js";
 import Employee from "../Models/employeeModel.js";
 import expressAsyncHandler from "express-async-handler";
 
-
 export const createAppointment = expressAsyncHandler(async (req, res) => {
   const createdAppointments = await Appointments.find({
     time: req.body.time,
@@ -26,6 +25,7 @@ export const createAppointment = expressAsyncHandler(async (req, res) => {
     await Appointments.create(req.body)
   ).populate("employee");
 
+  /*
   const schedule = appointment.employee.schedule;
   const appointmentDay = appointment.day;
   const appointmentDayName = appointment.dayName;
@@ -44,26 +44,21 @@ export const createAppointment = expressAsyncHandler(async (req, res) => {
     appointment.employee._id,
     { schedule: schedule }
   );
-
+*/
   //console.log(updateEmployee.schedule)
 
-  res.send(createdAppointments);
+  res.send({_id: appointment.id});
 });
 
 
 export const spliceAppointment = expressAsyncHandler(async(req, res) => {
 
-  //const findUserAppointment = await Appointments.findById(req.params.id);
+  const findUserAppointment = await Appointments.findById(req.params.id).populate("employee");
 
-  /*
-  const appointment = await (
-    await Appointments.create(req.body)
-  ).populate("employee");
-
-  const schedule = appointment.employee.schedule;
-  const appointmentDay = appointment.day;
-  const appointmentDayName = appointment.dayName;
-  const appointmentTime = appointment.time;
+  const schedule = findUserAppointment.employee.schedule;
+  const appointmentDay = findUserAppointment.day;
+  const appointmentDayName = findUserAppointment.dayName;
+  const appointmentTime = findUserAppointment.time;
 
   for (let i = 0; i < schedule.length; i++) {
     if (schedule[i].day == appointmentDay) {
@@ -74,20 +69,12 @@ export const spliceAppointment = expressAsyncHandler(async(req, res) => {
     }
   }
 
-  //console.log(schedule)
-
   const updateEmployee = await Employee.findByIdAndUpdate(
-    appointment.employee._id,
+    findUserAppointment.employee._id,
     { schedule: schedule }
   );
 
-  //console.log(updateEmployee.schedule)
-*/
-
-//console.log(findUserAppointment)
-//res.send(findUserAppointment);
-res.send('hi')
-console.log('hi')
+  res.send('schedule updated')
 })
 
 
@@ -111,7 +98,6 @@ export const updatePaidAppointment = expressAsyncHandler(async (req, res) => {
   const updatePaidAppointment = await Appointments.findByIdAndUpdate(req.params.id, {
     paid: "Paid",
   });
-
 
 
 

@@ -21,7 +21,7 @@ appointmentRouter.get("/getAppointment", isAuth, getAppointment);
 
 appointmentRouter.get("/getAppointment/:id", isAuth, getAppointmentId);
 appointmentRouter.put("/updatePaidAppointment/:id", updatePaidAppointment);
-appointmentRouter.get("/spliceAppointment", spliceAppointment);
+appointmentRouter.put("/spliceAppointment/:id", spliceAppointment);
 appointmentRouter.post("/createAppointment", createAppointment);
 
 export default appointmentRouter;
