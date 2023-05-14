@@ -1,21 +1,22 @@
-import React, { useState, useContext, useEffect } from "react";
-import axios from "axios";
-import Modal from "react-bootstrap/Modal";
-import Card from "react-bootstrap/Card";
-import Form from "react-bootstrap/Form";
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
-import Button from "react-bootstrap/Button";
-import { Store } from "../Store";
-import { useNavigate } from "react-router-dom";
-import LoadingBoxComp from "../components/LoadingBoxComp";
-import Table from "react-bootstrap/Table";
-import { toast } from "react-toastify";
-import { getError } from "../utils";
+import React, { useState, useContext, useEffect } from 'react';
+import axios from 'axios';
+import Modal from 'react-bootstrap/Modal';
+import Card from 'react-bootstrap/Card';
+import Form from 'react-bootstrap/Form';
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
+import Button from 'react-bootstrap/Button';
+import { Store } from '../Store';
+import { useNavigate } from 'react-router-dom';
+import LoadingBoxComp from '../components/LoadingBoxComp';
+import Table from 'react-bootstrap/Table';
+import { toast } from 'react-toastify';
+import { getError } from '../utils';
 
 export default function ModalComp(props) {
   const [loading, setLoading] = useState(false);
 
+  //make a better function
   const last2 = (price) => {
     const str = price.toString();
     return str.slice(0, str.length - 2);
@@ -23,33 +24,9 @@ export default function ModalComp(props) {
 
   const navigate = useNavigate();
 
-  const cutType = {
-    hairCuts: [
-      { cutType: "Men Haircut & Beard", price: 3000 },
-      {
-        cutType: "Kids Cuts(under 12 years old)",
-        price: 2000,
-      },
-      {
-        cutType: "Men Haircut/eyebrows(No Facial)",
-        price: 2500,
-      },
-      {
-        cutType: "Eyebrows",
-        price: 500,
-      },
-      {
-        cutType: "Shape Up & Beard",
-        price: 1800,
-      },
-      {
-        cutType: "Shape Up(No Facial)",
-        price: 1000,
-      },
-    ],
-  };
-
   const { state } = useContext(Store);
+
+  let stylistMenu = props.id.menu
 
   // sv === scheduleValues
 
@@ -60,28 +37,28 @@ export default function ModalComp(props) {
   const user = !state.userInfo ? null : state.userInfo._id;
 
   let firstObj = sv[0];
-  const [cutName, setCutName] = useState("");
-  const [cutPrice, setCutPrice] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("");
+  const [cutName, setCutName] = useState('');
+  const [cutPrice, setCutPrice] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('');
   const [num, setNum] = useState(0);
-  const [time, setTime] = useState("");
+  const [time, setTime] = useState('');
   const [day, setDay] = useState(Object.values(firstObj)[1]);
   const [month, setMonth] = useState(Object.values(firstObj)[2]);
   const [dayName, setDayName] = useState(Object.keys(firstObj)[0]);
   //const [scheduleObj, setScheduleObj] = useState(sv);
-  const scheduleObj = sv
+  const scheduleObj = sv;
 
   const numObj = scheduleObj[num];
 
   const timeArr = numObj[dayName];
 
   useEffect(() => {
-    setTime("");
+    setTime('');
   }, [num]);
 
   const createAppointmentFunc = async (clientSecret, paymentMethod) => {
     try {
-      const { data } = await axios.post("/api/appointment/createAppointment", {
+      const { data } = await axios.post('/api/appointment/createAppointment', {
         employee,
         user,
         time,
@@ -94,30 +71,20 @@ export default function ModalComp(props) {
         clientSecret,
       });
 
-      if (paymentMethod === "Pay now") {
-        navigate(`/paymentScreen/${data._id}`);
-      } else {
-        navigate(`/appointments`);
-      }
-
-      //setScheduleObj(data.employee.schedule);
-      //console.log(data.employee.schedule)
+      navigate(`/paymentScreen/${data._id}`);
     } catch (err) {
       toast.error(getError(err));
-      console.log(err)
       setLoading(false);
     }
   };
-
-  //console.log(cutPrice, employee, employeeKey, employeeIv)
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
     try {
       setLoading(true);
-      if (paymentMethod === "Pay now") {
-        const clientData = await axios.post("api/create-payment-intent", {
+      if (paymentMethod === 'Pay now') {
+        const clientData = await axios.post('api/create-payment-intent', {
           amount: cutPrice,
           id: employee,
           key: employeeKey,
@@ -128,12 +95,19 @@ export default function ModalComp(props) {
         setLoading(false);
         createAppointmentFunc(clientSecret, paymentMethod);
       } else {
+        const clientData = await axios.post('api/create-payment-intent', {
+          amount: cutPrice / 2,
+          id: employee,
+          key: employeeKey,
+          iv: employeeIv,
+        });
+
+        const clientSecret = clientData.data.clientSecret;
         setLoading(false);
-        createAppointmentFunc("", paymentMethod);
+        createAppointmentFunc(clientSecret, paymentMethod);
       }
     } catch (err) {
       setLoading(false);
-      console.log(err);
     }
   };
 
@@ -146,8 +120,8 @@ export default function ModalComp(props) {
     numOfCards.push(
       <Card
         key={i}
-        style={{ width: "4rem" }}
-        className={num === i ? "border-color text-center" : "text-center"}
+        style={{ width: '4rem' }}
+        className={num === i ? 'border-color text-center' : 'text-center'}
         onClick={() => {
           setDayName(dayn[0]);
           setDay(sv[i].day);
@@ -241,8 +215,8 @@ export default function ModalComp(props) {
           <Modal.Body
             className={
               current === 0
-                ? "o active pt-4 ps-4 pe-4 pb-5"
-                : "no active pt-4 ps-4 pe-4 pb-5"
+                ? 'o active pt-4 ps-4 pe-4 pb-5'
+                : 'no active pt-4 ps-4 pe-4 pb-5'
             }
           >
             <Table className="table mb-0 " responsive>
@@ -254,11 +228,11 @@ export default function ModalComp(props) {
                 </tr>
               </thead>
               <tbody>
-                {cutType.hairCuts.map((obj, id) => (
+                {stylistMenu.map((list, id) => (
                   <tr key={id}>
-                    <td>{`${obj.cutType}`}</td>
+                    <td className='align-middle'>{`${list.listName}`}</td>
                     <td className="align-middle">{`$${last2(
-                      obj.price
+                      list.price
                     )}.00`}</td>
 
                     <td className="align-middle">
@@ -268,8 +242,8 @@ export default function ModalComp(props) {
                           setCurrent(
                             current === length ? 0 : (current = current + 1)
                           );
-                          setCutName(obj.cutType);
-                          setCutPrice(obj.price);
+                          setCutName(list.listName);
+                          setCutPrice(list.price);
                         }}
                       >
                         Book
@@ -284,8 +258,8 @@ export default function ModalComp(props) {
           <Modal.Body
             className={
               current === 1
-                ? "o active2 pt-4 ps-5 pe-5 pb-5"
-                : " no active2 pt-4 ps-5 pe-5 pb-5"
+                ? 'o active2 pt-4 ps-5 pe-5 pb-5'
+                : ' no active2 pt-4 ps-5 pe-5 pb-5'
             }
           >
             <h1 className="text-center pb-3">Make an appointment</h1>
@@ -310,8 +284,8 @@ export default function ModalComp(props) {
                   key={timeNum}
                   className={
                     time === mapTime
-                      ? "border-color text-center pick-time"
-                      : "text-center pick-time"
+                      ? 'border-color text-center pick-time'
+                      : 'text-center pick-time'
                   }
                   onClick={(e) => {
                     setTime(e.target.innerText);
@@ -337,7 +311,7 @@ export default function ModalComp(props) {
 
             <Button
               onClick={nextSlide}
-              className={time ? "border-color w-100 p-2" : "none"}
+              className={time ? 'border-color w-100 p-2' : 'none'}
             >
               Next
             </Button>
@@ -346,11 +320,11 @@ export default function ModalComp(props) {
           <Modal.Body
             className={
               current === 2
-                ? "o active3 pt-4 ps-5 pe-5 pb-5"
-                : "no active3 pt-4 ps-5 pe-5 pb-5"
+                ? 'o active3 pt-4 ps-5 pe-5 pb-5'
+                : 'no active3 pt-4 ps-5 pe-5 pb-5'
             }
           >
-            {["Pay now", "Pay in person"].map((type) => (
+            {['Pay now', 'Pay half deposit'].map((type) => (
               <Form.Check
                 key={type}
                 className="pt-4 ps-5 pe-5"

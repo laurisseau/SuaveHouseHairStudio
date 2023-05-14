@@ -42,9 +42,12 @@ export default function PaymentForm() {
         `/api/appointment/spliceAppointment/${id}`
       );
 
-      if (data && splice) {
+      
+      if(data){
         window.location.href = "/appointments"
+        console.log(splice)
       }
+      
     }
     setIsProcessing(false);
   };

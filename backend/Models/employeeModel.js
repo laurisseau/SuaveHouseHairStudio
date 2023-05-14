@@ -1,58 +1,58 @@
-import mongoose from "mongoose";
-import crypto from "crypto";
-import bcrypt from "bcryptjs";
-import dotenv from "dotenv";
-dotenv.config({ path: "config.env" });
+import mongoose from 'mongoose';
+import crypto from 'crypto';
+import bcrypt from 'bcryptjs';
+import dotenv from 'dotenv';
+dotenv.config({ path: 'config.env' });
 //const validator = require('validator')
 
 const employeeSchema = new mongoose.Schema(
   {
     firstname: {
       type: String,
-      require: [true, "A firstname is required"],
+      require: [true, 'A firstname is required'],
     },
 
     lastname: {
       type: String,
-      require: [true, "A lastname is required"],
+      require: [true, 'A lastname is required'],
     },
 
     email: {
       type: String,
-      require: [true, "A email is required"],
+      require: [true, 'A email is required'],
     },
 
     number: {
       type: String,
-      require: [true, "A phone Number is required"],
+      require: [true, 'A phone Number is required'],
     },
 
     position: {
       type: String,
-      enum: ["Hairstylist", "Barber"],
-      require: [true, "A job title is required"],
+      enum: ['Hairstylist', 'Barber'],
+      require: [true, 'A job title is required'],
     },
 
     createdAt: {
       type: Date,
       default: Date.now,
     },
-
+    menu: [],
     schedule: [],
 
     appointment: {
       type: mongoose.Schema.ObjectId,
-      ref: "User",
+      ref: 'User',
     },
 
     publishableKey: {
       type: String,
-      require: [true, "A publishable key is required"], // test
+      require: [true, 'A publishable key is required'], // test
     },
 
     secretKey: {
       type: String,
-      require: [true, "A key is required"], // test
+      require: [true, 'A key is required'], // test
     },
 
     iv: {
@@ -62,18 +62,18 @@ const employeeSchema = new mongoose.Schema(
     password: { type: String, required: true },
     confirmPassword: {
       type: String,
-      required: [true, "you need to confirm your password"],
+      required: [true, 'you need to confirm your password'],
       validate: {
         validator: function (el) {
           return el === this.password;
         },
-        message: "passwords are not the same",
+        message: 'passwords are not the same',
       },
     },
     isEmployee: {
       type: String,
-      default: "Employee",
-      enum: ["Employee", "Admin"],
+      default: 'Employee',
+      enum: ['Employee', 'Admin'],
       required: true,
     },
     passwordChangedAt: Date,
@@ -91,8 +91,8 @@ const employeeSchema = new mongoose.Schema(
   }
 );
 
-employeeSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+employeeSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
 
   this.password = await bcrypt.hash(this.password, 12);
 
@@ -103,17 +103,17 @@ employeeSchema.pre("save", async function (next) {
 
 //------------------------------------------
 
-employeeSchema.pre("save", async function (next) {
-  if (!this.isModified("secretKey")) return next();
+employeeSchema.pre('save', async function (next) {
+  if (!this.isModified('secretKey')) return next();
 
-  const algorithm = "aes-256-cbc";
+  const algorithm = 'aes-256-cbc';
   const secretKey = process.env.ENCRYPT_AND_DECRYPT_KEY;
   const iv = crypto.randomBytes(16);
 
   const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
-  let encryptedData = cipher.update(this.secretKey, "utf-8", "hex");
-  encryptedData += cipher.final("hex");
-  const base64data = Buffer.from(iv, "binary").toString("base64");
+  let encryptedData = cipher.update(this.secretKey, 'utf-8', 'hex');
+  encryptedData += cipher.final('hex');
+  const base64data = Buffer.from(iv, 'binary').toString('base64');
 
   this.secretKey = encryptedData;
   this.iv = base64data;
@@ -124,20 +124,20 @@ employeeSchema.pre("save", async function (next) {
 //------------------------------------------
 
 employeeSchema.methods.createPasswordResetToken = function () {
-  const resetToken = crypto.randomBytes(32).toString("hex");
+  const resetToken = crypto.randomBytes(32).toString('hex');
 
   this.PasswordResetToken = crypto
-    .createHash("sha256")
+    .createHash('sha256')
     .update(resetToken)
-    .digest("hex");
+    .digest('hex');
 
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
   return resetToken;
 };
 
-employeeSchema.pre("save", function (next) {
-  if (!this.isModified("password") || this.isNew) return next();
+employeeSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
 
   // the password changed at has to be brought back one second becuse
   // the token sometimes saves 2nd
@@ -147,6 +147,6 @@ employeeSchema.pre("save", function (next) {
   next();
 });
 
-const Employee = mongoose.model("Employee", employeeSchema);
+const Employee = mongoose.model('Employee', employeeSchema);
 
 export default Employee;

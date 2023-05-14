@@ -3,6 +3,7 @@ import Employee from "../Models/employeeModel.js";
 import expressAsyncHandler from "express-async-handler";
 
 export const createAppointment = expressAsyncHandler(async (req, res) => {
+  /*
   const createdAppointments = await Appointments.find({
     time: req.body.time,
     employee: req.body.employee,
@@ -20,7 +21,8 @@ export const createAppointment = expressAsyncHandler(async (req, res) => {
     }
   }
 
-  
+  */
+ 
   const appointment = await (
     await Appointments.create(req.body)
   ).populate("employee");
@@ -82,6 +84,7 @@ export const getAppointment = expressAsyncHandler(async (req, res) => {
   const appointment = await Appointments.find({
     user: req.user._id,
     active: true,
+    paid: "Paid"
   }).populate("employee");
 
   res.send(appointment);

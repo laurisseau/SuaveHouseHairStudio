@@ -129,55 +129,64 @@ export const resizeUserPhoto = expressAsyncHandler(async (req, res, next) => {
 export const createEmployee = expressAsyncHandler(async (req, res) => {
   let dayTime = [];
   let satTime = [];
+  let stylistMenu = [];
 
   if (req.body.position === 'Barber') {
     dayTime = [
       '8:00am',
-      '8:30am',
       '9:00am',
-      '9:30am',
-      '10:30am',
+      '10:00am',
       '11:00am',
-      '11:30am',
       '12:00pm',
-      '12:30pm',
       '1:00pm',
-      '1:30pm',
       '2:00pm',
-      '2:30pm',
       '3:00pm',
-      '3:30pm',
       '4:00pm',
-      '4:30pm',
       '5:00pm',
-      '5:30pm',
       '6:00pm',
-      '6:30pm',
-      '7:30pm',
+      '7:00pm',
     ];
 
     satTime = [
       '9:00am',
-      '9:30am',
-      '10:30am',
+      '10:00am',
       '11:00am',
-      '11:30am',
       '12:00pm',
-      '12:30pm',
       '1:00pm',
-      '1:30pm',
       '2:00pm',
-      '2:30pm',
       '3:00pm',
-      '3:30pm',
       '4:00pm',
-      '4:30pm',
       '5:00pm',
     ];
-  } else if (req.body.position === 'Hairstylist') {
-    dayTime = ['8:00am', '11:00am', '2:00pm', '5:00pm', '8:00pm'];
 
-    satTime = ['12:00pm', '3:00pm', '6:00pm'];
+    stylistMenu = [
+      { listName: 'Men Haircut & Beard', price: 3000 },
+      {
+        listName: 'Kids Cuts(under 12 years old)',
+        price: 2000,
+      },
+      {
+        listName: 'Men Haircut/eyebrows(No Facial)',
+        price: 2500,
+      },
+      {
+        listName: 'Eyebrows',
+        price: 500,
+      },
+      {
+        listName: 'Shape Up & Beard',
+        price: 1800,
+      },
+      {
+        listName: 'Shape Up(No Facial)',
+        price: 1000,
+      },
+    ];
+  } else if (req.body.position === 'Hairstylist') {
+    dayTime = ['8:00am', '8:15am', '8:30am', '8:45am', '9:00am'];
+
+    satTime = ['9:00am', '9:15am', '9:30am'];
+    stylistMenu = [{listName: 'consult', price: 7500}]
   }
 
   for (counter; counter > 0; counter--) {
@@ -247,6 +256,7 @@ export const createEmployee = expressAsyncHandler(async (req, res) => {
     number: req.body.number,
     position: req.body.position,
     isEmployee: req.body.isEmployee,
+    menu: stylistMenu,
     schedule: employeeSchedule,
     image: req.file.filename,
   });
