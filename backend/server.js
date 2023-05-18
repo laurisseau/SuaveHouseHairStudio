@@ -7,7 +7,9 @@ import userRoutes from "./Routes/userRoutes.js";
 import employeeRoutes from "./Routes/employeeRoutes.js";
 import appointmentRoutes from "./Routes/appointmentRoutes.js";
 import paymentRouter from "./Routes/paymentRoutes.js";
-import {errorController} from "./Controller/errorController.js"
+import vacationRoutes from "./Routes/vacationRoutes.js";
+import {errorController} from "./Controller/errorController.js";
+
 
 const app = express();
 
@@ -36,6 +38,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/users", userRoutes);
 app.use("/api/employee", employeeRoutes);
 app.use("/api/appointment", appointmentRoutes); 
+app.use("/api/vacations", vacationRoutes)
 app.use("/api", paymentRouter)
 
 const __dirname = path.resolve()

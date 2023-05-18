@@ -39,6 +39,10 @@ const employeeSchema = new mongoose.Schema(
     },
     menu: [],
     schedule: [],
+    vacations: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Vacations"
+    },
 
     appointment: {
       type: mongoose.Schema.ObjectId,
