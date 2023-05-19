@@ -38,7 +38,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/users", userRoutes);
 app.use("/api/employee", employeeRoutes);
 app.use("/api/appointment", appointmentRoutes); 
-app.use("/api/vacations", vacationRoutes)
+app.use("/api/vacation", vacationRoutes)
 app.use("/api", paymentRouter)
 
 const __dirname = path.resolve()
