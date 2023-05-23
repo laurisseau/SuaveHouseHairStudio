@@ -1,4 +1,5 @@
 import Appointments from "./Models/appointmentModel.js";
+import Vacations from './Models/vacationModel.js';
 import Employee from "./Models/employeeModel.js";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
@@ -158,10 +159,13 @@ const updatedEmployeeScheduleDaily = () => {
 
       updatedSchedule.push(emptyObj);
 
+
       if (emptyObjDayName === "Sun") {
         emptyObj[emptyObjDayName] = [];
         emptyObj["day"] = addedDay;
         emptyObj["month"] = month;
+
+        
       } else if (emptyObjDayName === "Sat") {
         emptyObj[emptyObjDayName] = satTime;
         emptyObj["day"] = addedDay;
@@ -170,6 +174,25 @@ const updatedEmployeeScheduleDaily = () => {
         emptyObj[emptyObjDayName] = dayTime;
         emptyObj["day"] = addedDay;
         emptyObj["month"] = month;
+
+        Vacations.find((err, vacationDocs) => {
+           
+          for (let i = 0; i < vacationDocs.length; i++) {
+            
+            //console.log(vacationDocs[0].employee.id)
+            let vacationEmployeeId = vacationDocs[0].employee.id
+            //if(vacationEmployeeId === )
+            console.log(docs[0].id)
+
+           
+          }
+
+        }).populate('employee')
+
+        //console.log(await Vacations.find())
+
+        //if(emptyObj["day"] === vacationDay && emptyObj["month"] === vacationMonth )
+        // dont show the time so time will == []
       }
 
       await Employee.findByIdAndUpdate(docs[i]._id, {
