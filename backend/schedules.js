@@ -1,68 +1,68 @@
-import Appointments from "./Models/appointmentModel.js";
+import Appointments from './Models/appointmentModel.js';
 import Vacations from './Models/vacationModel.js';
-import Employee from "./Models/employeeModel.js";
-import dotenv from "dotenv";
-import mongoose from "mongoose";
-import { sendInvoice } from "./sendEmail.js";
+import Employee from './Models/employeeModel.js';
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import { sendInvoice } from './sendEmail.js';
 dotenv.config();
 
 let dayTime = [
-  "8:00am",
-  "8:30am",
-  "9:00am",
-  "9:30am",
-  "10:30am",
-  "11:00am",
-  "11:30am",
-  "12:00pm",
-  "12:30pm",
-  "1:00pm",
-  "1:30pm",
-  "2:00pm",
-  "2:30pm",
-  "3:00pm",
-  "3:30pm",
-  "4:00pm",
-  "4:30pm",
-  "5:00pm",
-  "5:30pm",
-  "6:00pm",
-  "6:30pm",
-  "7:30pm",
+  '8:00am',
+  '8:30am',
+  '9:00am',
+  '9:30am',
+  '10:30am',
+  '11:00am',
+  '11:30am',
+  '12:00pm',
+  '12:30pm',
+  '1:00pm',
+  '1:30pm',
+  '2:00pm',
+  '2:30pm',
+  '3:00pm',
+  '3:30pm',
+  '4:00pm',
+  '4:30pm',
+  '5:00pm',
+  '5:30pm',
+  '6:00pm',
+  '6:30pm',
+  '7:30pm',
 ];
 
 let satTime = [
-  "9:00am",
-  "9:30am",
-  "10:30am",
-  "11:00am",
-  "11:30am",
-  "12:00pm",
-  "12:30pm",
-  "1:00pm",
-  "1:30pm",
-  "2:00pm",
-  "2:30pm",
-  "3:00pm",
-  "3:30pm",
-  "4:00pm",
-  "4:30pm",
-  "5:00pm",
+  '9:00am',
+  '9:30am',
+  '10:30am',
+  '11:00am',
+  '11:30am',
+  '12:00pm',
+  '12:30pm',
+  '1:00pm',
+  '1:30pm',
+  '2:00pm',
+  '2:30pm',
+  '3:00pm',
+  '3:30pm',
+  '4:00pm',
+  '4:30pm',
+  '5:00pm',
 ];
 
 const monthNames = [
-  "January",
-  "Febuary",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  'January',
+  'Febuary',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 const daysInMonth = {
@@ -79,7 +79,7 @@ const daysInMonth = {
   10: 30,
   11: 31,
 };
-let dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+let dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 let limit = 7;
 
 var utcDate = new Date();
@@ -96,7 +96,7 @@ let currDay = date.getDate();
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
-    console.log("connected to db");
+    console.log('connected to db');
   })
   .catch((err) => {
     console.log(err.message);
@@ -159,40 +159,18 @@ const updatedEmployeeScheduleDaily = () => {
 
       updatedSchedule.push(emptyObj);
 
-
-      if (emptyObjDayName === "Sun") {
+      if (emptyObjDayName === 'Sun') {
         emptyObj[emptyObjDayName] = [];
-        emptyObj["day"] = addedDay;
-        emptyObj["month"] = month;
-
-        
-      } else if (emptyObjDayName === "Sat") {
+        emptyObj['day'] = addedDay;
+        emptyObj['month'] = month;
+      } else if (emptyObjDayName === 'Sat') {
         emptyObj[emptyObjDayName] = satTime;
-        emptyObj["day"] = addedDay;
-        emptyObj["month"] = month;
+        emptyObj['day'] = addedDay;
+        emptyObj['month'] = month;
       } else {
         emptyObj[emptyObjDayName] = dayTime;
-        emptyObj["day"] = addedDay;
-        emptyObj["month"] = month;
-
-        Vacations.find((err, vacationDocs) => {
-           
-          for (let i = 0; i < vacationDocs.length; i++) {
-            
-            //console.log(vacationDocs[0].employee.id)
-            let vacationEmployeeId = vacationDocs[0].employee.id
-            //if(vacationEmployeeId === )
-            console.log(docs[0].id)
-
-           
-          }
-
-        }).populate('employee')
-
-        //console.log(await Vacations.find())
-
-        //if(emptyObj["day"] === vacationDay && emptyObj["month"] === vacationMonth )
-        // dont show the time so time will == []
+        emptyObj['day'] = addedDay;
+        emptyObj['month'] = month;
       }
 
       await Employee.findByIdAndUpdate(docs[i]._id, {
@@ -203,7 +181,7 @@ const updatedEmployeeScheduleDaily = () => {
 };
 
 // check if console.log() called for this function ex: node backend/schedules.js updatedEmployeeScheduleDaily
-if (process.argv[2] === "updatedEmployeeScheduleDaily") {
+if (process.argv[2] === 'updatedEmployeeScheduleDaily') {
   updatedEmployeeScheduleDaily();
 }
 
@@ -234,7 +212,7 @@ const checkIfAppointmentsArePastDate = () => {
 };
 
 // check if console.log() called for this function ex: node backend/schedules.js checkIfAppointmentsArePastDate
-if (process.argv[2] === "checkIfAppointmentsArePastDate") {
+if (process.argv[2] === 'checkIfAppointmentsArePastDate') {
   checkIfAppointmentsArePastDate();
 }
 
@@ -276,6 +254,6 @@ const clientPayment = () => {
 };
 
 // check if console.log() called for this function ex: node backend/schedules.js clientPayment
-if (process.argv[2] === "clientPayment") {
+if (process.argv[2] === 'clientPayment') {
   clientPayment();
 }

@@ -39,6 +39,7 @@ const employeeSchema = new mongoose.Schema(
     },
     menu: [],
     schedule: [],
+    vacations:[],
 
     appointment: {
       type: mongoose.Schema.ObjectId,
