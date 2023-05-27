@@ -4,7 +4,7 @@ import { createVacation, employeeVacation } from '../Controller/vacationControll
 
 const appointmentRouter = express.Router();
 
-appointmentRouter.put('/createVacation/:id', createVacation);
+appointmentRouter.post('/createVacation', createVacation);
 
 appointmentRouter.get('/employeeVacation/:id', employeeVacation);
 
