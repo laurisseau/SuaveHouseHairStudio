@@ -108,6 +108,7 @@ const updatedEmployeeScheduleDaily = () => {
     const docsLength = docs.length;
     for (let i = 0; i < docsLength; i++) {
       const updatedSchedule = docs[i].schedule;
+      const vactionDays = docs[i].vacations;
 
       updatedSchedule.shift();
 
@@ -171,6 +172,16 @@ const updatedEmployeeScheduleDaily = () => {
         emptyObj[emptyObjDayName] = dayTime;
         emptyObj['day'] = addedDay;
         emptyObj['month'] = month;
+
+        for (let i = 0; i < vactionDays.length; i++) {
+          if (
+            vactionDays[i].day == emptyObj['day'] &&
+            vactionDays[i].month == emptyObj['month']
+          ) {
+          //console.log(`this person has vacation on the ${vactionDays[i].day} of ${vactionDays[i].month}`)
+            emptyObj[emptyObjDayName] = [];
+          }
+        }
       }
 
       await Employee.findByIdAndUpdate(docs[i]._id, {
