@@ -19,6 +19,10 @@ function UserLoggedIn(props) {
         <LinkContainer to="/employeeAppointments">
           <NavDropdown.Item> Appointments </NavDropdown.Item>
         </LinkContainer>
+
+        <LinkContainer to="/vacations">
+          <NavDropdown.Item> Vacations </NavDropdown.Item>
+        </LinkContainer>
       </div>
     );
   } else if (loggedInUser === "user") {
@@ -43,6 +47,10 @@ function UserLoggedIn(props) {
         <LinkContainer to="/employees">
           <NavDropdown.Item> Employee's </NavDropdown.Item>
         </LinkContainer>
+
+        <LinkContainer to="/vacations">
+          <NavDropdown.Item> Vacations </NavDropdown.Item>
+        </LinkContainer>
       </div>
     );
   }
@@ -57,6 +65,10 @@ function UserLoggedInSideBar(props) {
       <div className="dropdown">
         <Link to="/employeeAppointments" className="link">
           Appointments
+        </Link>
+
+        <Link to='/vacations' classname="link">
+          Vacations
         </Link>
       </div>
     );
@@ -82,11 +94,15 @@ function UserLoggedInSideBar(props) {
         <Link to="/employees" className="link">
           Employee's
         </Link>
+
+        <Link to='/vacations' classname="link">
+          Vacations
+        </Link>
       </div>
     );
   }
   if (loggedInUser === null) {
-    return <div>hi</div>;
+    return <div></div>;
   }
 }
 
