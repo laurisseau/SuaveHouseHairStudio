@@ -16,7 +16,7 @@ import UpdateEmployeeScreen from "./screens/UpdateEmployeeScreen";
 import EmployeeAppointmentScreen from "./screens/EmployeeAppointmentScreen"
 import EmployeeForgotPasswordScreen from "./screens/EmployeeForgotPasswordScreen";
 import ResetEmployeePasswordScreen from "./screens/ResetEmployeePasswordScreen"
-
+import VacationScreen from "./screens/VacationScreen";
 
 function App() {
   return (
@@ -41,6 +41,7 @@ function App() {
             <Route path="/resetPassword/:token" element={<ResetPasswordScreen />}/>
             <Route path="/profile" element={<ProfileScreen />} />
             <Route path="/employeeAppointments" element={<EmployeeAppointmentScreen />}/>
+            <Route path="/vacations" element={<VacationScreen/>}/>
           </Routes>
         </main>
       </div>
