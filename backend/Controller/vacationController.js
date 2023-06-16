@@ -3,19 +3,30 @@ import Vacations from '../Models/vacationModel.js';
 import Employee from '../Models/employeeModel.js';
 
 export const createVacation = expressAsyncHandler(async (req, res) => {
+  let currentDate = new Date(req.body.startDate);
 
-  const findVacation = await Employee.updateOne(
-    { _id: req.params.id },
-    {
-      $push: {
-        vacations: {
-          day: req.body.day,
-          month: req.body.month,
-          dayName: req.body.dayName,
+  while (currentDate <= new Date(req.body.endDate)) {
+    const newCurrentDate = new Date(currentDate);
+
+    const date = newCurrentDate.toISOString().split('T')[0];
+
+    const month = date.split('-')[1];
+    const day = date.split('-')[2];
+
+    await Employee.updateOne(
+      { _id: req.params.id },
+      {
+        $push: {
+          vacations: {
+            day: day,
+            month: month,
+          },
         },
-      },
-    }
-  );
+      }
+    );
+
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
 
   res.send('Vacation Created');
 });
