@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import 'react-date-range/dist/styles.css'; // Import the default styles
 import 'react-date-range/dist/theme/default.css';
 import NavbarComp from "../components/NavbarComp";
+import axios from "axios"
 
 export default function VacationScreen() {
     const [selectedDates, setSelectedDates] = useState([
