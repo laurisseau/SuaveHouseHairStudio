@@ -317,20 +317,21 @@ nav {
   display: flex;
   flex-direction: column;
   align-items: center;
-
 }
 
 .vacation-text{
   line-height: 2;
 }
 
-@media screen and (max-width: 600px) {
+
+@media screen and (max-width: 900px) {
   .rdrDateRangeWrapper .rdrMonthsHorizontal{
     display: flex;
     flex-direction: column;
   }
 
-  .vacation-box{
-    width: 100%;
+  .rdrDefinedRangesWrapper{
+    display: none;
   }
+
 }
