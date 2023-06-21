@@ -227,17 +227,17 @@ export default function ModalComp(props) {
                   <th></th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody >
                 {stylistMenu.map((list, id) => (
                   <tr key={id}>
-                    <td className='align-middle'>{`${list.listName}`}</td>
-                    <td className="align-middle">{`$${last2(
+                    <td className='text-center align-middle'>{`${list.listName}`}</td>
+                    <td className="text-center align-middle">{`$${last2(
                       list.price
                     )}.00`}</td>
 
-                    <td className="align-middle">
+                    <td className="text-center align-middle">
                       <Button
-                        className="ms-2 me-2 "
+                        className=""
                         onClick={() => {
                           setCurrent(
                             current === length ? 0 : (current = current + 1)
