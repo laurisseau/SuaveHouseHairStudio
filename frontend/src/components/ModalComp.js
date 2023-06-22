@@ -235,6 +235,7 @@ export default function ModalComp(props) {
                       list.price
                     )}.00`}</td>
 
+
                     <td className="text-center align-middle">
                       <Button
                         className=""
