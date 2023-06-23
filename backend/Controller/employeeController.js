@@ -183,6 +183,7 @@ export const createEmployee = expressAsyncHandler(async (req, res) => {
       },
     ];
   } else if (req.body.position === 'Hairstylist') {
+    // need to talk to hairstylist bout the times
     dayTime = ['8:00am', '8:15am', '8:30am', '8:45am', '9:00am'];
 
     satTime = ['9:00am', '9:15am', '9:30am'];

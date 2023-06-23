@@ -67,7 +67,7 @@ function UserLoggedInSideBar(props) {
           Appointments
         </Link>
 
-        <Link to='/vacations' classname="link">
+        <Link to='/vacations' className="link">
           Vacations
         </Link>
       </div>
@@ -95,7 +95,7 @@ function UserLoggedInSideBar(props) {
           Employee's
         </Link>
 
-        <Link to='/vacations' classname="link">
+        <Link to='/vacations' className="link">
           Vacations
         </Link>
       </div>

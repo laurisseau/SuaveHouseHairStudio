@@ -59,7 +59,7 @@ export default function HomeScreen() {
 
         <div className="title">
           <h3>- Suave House -</h3>
-          <h1>BARBERSHOP</h1>
+          <h1>HAIR STUDIO</h1>
         </div>
       </header>
 
@@ -170,7 +170,7 @@ export default function HomeScreen() {
           style={{ height: "100%" }}
         >
           <div>
-            <h1 style={{ fontSize: "18px" }}>© 2023 SUAVE HOUSE BARBER SHOP</h1>
+            <h1 style={{ fontSize: "18px" }}>© 2023 SUAVE HOUSE HAIR STUDIO</h1>
             <div className="d-flex justify-content-center ">
               <Link to="/employeeSignin">Employee?</Link>
             </div>
