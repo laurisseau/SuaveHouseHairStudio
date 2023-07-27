@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 dotenv.config();
 
 mongoose
-  .connect(process.env.MONGODB_URI_TEST)
+  .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("connected to db");
   })
